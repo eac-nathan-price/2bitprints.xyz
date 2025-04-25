@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { GalleryComponent } from './gallery/gallery.component';
 
 @Component({
     selector: 'app-root',
-    imports: [RouterOutlet],
     templateUrl: './app.component.html',
-    styleUrl: './app.component.scss'
+    styleUrls: ['./app.component.scss'],
+    imports: [GalleryComponent],
+    standalone: true
 })
 export class AppComponent {
   title = '2bitprints.xyz';
