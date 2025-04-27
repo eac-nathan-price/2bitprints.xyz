@@ -1,4 +1,5 @@
-import { Component, OnInit, ElementRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, ElementRef, OnDestroy, PLATFORM_ID, Inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
 import { GalleryService, PrintImage } from './gallery.service';
@@ -19,6 +20,7 @@ export class GalleryComponent implements OnInit, OnDestroy {
   private world!: CANNON.World;
   private cubes: { mesh: THREE.Mesh; body: CANNON.Body; image: PrintImage }[] = [];
   private animationFrameId!: number;
+  private isBrowser: boolean;
   
   public tags: string[] = [];
   public selectedTag: string = '';
@@ -26,23 +28,36 @@ export class GalleryComponent implements OnInit, OnDestroy {
 
   constructor(
     private elementRef: ElementRef,
-    private galleryService: GalleryService
-  ) {}
+    private galleryService: GalleryService,
+    @Inject(PLATFORM_ID) platformId: Object
+  ) {
+    this.isBrowser = isPlatformBrowser(platformId);
+  }
 
   ngOnInit(): void {
-    this.initScene();
-    this.initPhysics();
-    this.loadTags();
-    this.loadImages();
-    this.animate();
+    if (this.isBrowser) {
+      this.initScene();
+      this.initPhysics();
+      this.loadTags();
+      this.loadImages();
+      this.animate();
+    }
   }
 
   ngOnDestroy(): void {
-    cancelAnimationFrame(this.animationFrameId);
-    this.renderer.dispose();
+    if (this.isBrowser) {
+      if (this.animationFrameId) {
+        cancelAnimationFrame(this.animationFrameId);
+      }
+      if (this.renderer) {
+        this.renderer.dispose();
+      }
+    }
   }
 
   private initScene(): void {
+    if (!this.isBrowser) return;
+
     // Create scene
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(0x1a1a1a);
@@ -79,6 +94,8 @@ export class GalleryComponent implements OnInit, OnDestroy {
   }
 
   private initPhysics(): void {
+    if (!this.isBrowser) return;
+
     this.world = new CANNON.World({
       gravity: new CANNON.Vec3(0, -9.82, 0)
     });
@@ -119,6 +136,8 @@ export class GalleryComponent implements OnInit, OnDestroy {
   }
 
   private clearScene(): void {
+    if (!this.isBrowser) return;
+
     // Remove all cubes from the scene and physics world
     this.cubes.forEach(cube => {
       this.scene.remove(cube.mesh);
@@ -138,6 +157,8 @@ export class GalleryComponent implements OnInit, OnDestroy {
   }
 
   private createCubes(images: PrintImage[]): void {
+    if (!this.isBrowser) return;
+
     images.forEach((image: PrintImage, index: number) => {
       const texture = new THREE.TextureLoader().load(image.url);
       const materials = [
@@ -172,6 +193,8 @@ export class GalleryComponent implements OnInit, OnDestroy {
   }
 
   private animate(): void {
+    if (!this.isBrowser) return;
+
     this.animationFrameId = requestAnimationFrame(() => this.animate());
 
     // Update physics
