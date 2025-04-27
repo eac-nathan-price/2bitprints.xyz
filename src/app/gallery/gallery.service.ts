@@ -12,14 +12,17 @@ export interface PrintImage {
 })
 export class GalleryService {
   private images: PrintImage[] = [
-    // Add your 3D print images here
-    // Example:
-    // {
-    //   url: '/images/print1.jpg',
-    //   title: 'My First Print',
-    //   description: 'A beautiful 3D printed object',
-    //   tags: ['PLA', 'functional', 'vase']
-    // }
+    {
+      url: '/images/amiga-hdmi-mod.jpg',
+      title: 'Amiga HDMI Mod',
+      description: '',
+      tags: ['PLA', 'desert-tan', 'functional']
+    }, {
+      url: '/images/badtz-keychains.jpg',
+      title: 'Badtz-Maru Keychains',
+      description: '',
+      tags: ['PLA', 'multi-color', 'keychain']
+    }
   ];
 
   getImages(): Promise<PrintImage[]> {
