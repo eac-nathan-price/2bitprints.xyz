@@ -2,19 +2,27 @@ import { Component, OnInit, ElementRef, OnDestroy } from '@angular/core';
 import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
 import { GalleryService, PrintImage } from './gallery.service';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-gallery',
   templateUrl: './gallery.component.html',
-  styleUrls: ['./gallery.component.scss']
+  styleUrls: ['./gallery.component.scss'],
+  standalone: true,
+  imports: [CommonModule, FormsModule]
 })
 export class GalleryComponent implements OnInit, OnDestroy {
   private scene!: THREE.Scene;
   private camera!: THREE.PerspectiveCamera;
   private renderer!: THREE.WebGLRenderer;
   private world!: CANNON.World;
-  private cubes: { mesh: THREE.Mesh; body: CANNON.Body }[] = [];
+  private cubes: { mesh: THREE.Mesh; body: CANNON.Body; image: PrintImage }[] = [];
   private animationFrameId!: number;
+  
+  public tags: string[] = [];
+  public selectedTag: string = '';
+  public isFiltering: boolean = false;
 
   constructor(
     private elementRef: ElementRef,
@@ -24,6 +32,7 @@ export class GalleryComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.initScene();
     this.initPhysics();
+    this.loadTags();
     this.loadImages();
     this.animate();
   }
@@ -91,9 +100,44 @@ export class GalleryComponent implements OnInit, OnDestroy {
     this.scene.add(groundMesh);
   }
 
+  private loadTags(): void {
+    this.tags = this.galleryService.getAllTags();
+  }
+
+  public onTagSelect(tag: string): void {
+    this.selectedTag = tag;
+    this.isFiltering = true;
+    this.clearScene();
+    this.loadImagesByTag(tag);
+  }
+
+  public clearFilter(): void {
+    this.selectedTag = '';
+    this.isFiltering = false;
+    this.clearScene();
+    this.loadImages();
+  }
+
+  private clearScene(): void {
+    // Remove all cubes from the scene and physics world
+    this.cubes.forEach(cube => {
+      this.scene.remove(cube.mesh);
+      this.world.removeBody(cube.body);
+    });
+    this.cubes = [];
+  }
+
+  private async loadImagesByTag(tag: string): Promise<void> {
+    const images = await this.galleryService.getImagesByTag(tag);
+    this.createCubes(images);
+  }
+
   private async loadImages(): Promise<void> {
     const images = await this.galleryService.getImages();
-    
+    this.createCubes(images);
+  }
+
+  private createCubes(images: PrintImage[]): void {
     images.forEach((image: PrintImage, index: number) => {
       const texture = new THREE.TextureLoader().load(image.url);
       const materials = [
@@ -123,7 +167,7 @@ export class GalleryComponent implements OnInit, OnDestroy {
 
       this.world.addBody(body);
       this.scene.add(mesh);
-      this.cubes.push({ mesh, body });
+      this.cubes.push({ mesh, body, image });
     });
   }
 

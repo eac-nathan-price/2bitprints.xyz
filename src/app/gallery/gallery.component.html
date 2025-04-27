@@ -1,3 +1,22 @@
 <div class="gallery-container">
+  <div class="tag-controls">
+    <div class="tag-list">
+      <button 
+        *ngFor="let tag of tags" 
+        [class.active]="selectedTag === tag"
+        (click)="onTagSelect(tag)"
+        class="tag-button"
+      >
+        {{ tag }}
+      </button>
+    </div>
+    <button 
+      *ngIf="isFiltering" 
+      (click)="clearFilter()"
+      class="clear-filter"
+    >
+      Clear Filter
+    </button>
+  </div>
   <!-- The Three.js canvas will be inserted here -->
 </div>

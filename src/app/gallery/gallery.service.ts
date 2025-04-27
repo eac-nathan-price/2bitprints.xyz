@@ -4,6 +4,7 @@ export interface PrintImage {
   url: string;
   title: string;
   description: string;
+  tags: string[];
 }
 
 @Injectable({
@@ -14,9 +15,10 @@ export class GalleryService {
     // Add your 3D print images here
     // Example:
     // {
-    //   url: 'assets/images/print1.jpg',
+    //   url: '/images/print1.jpg',
     //   title: 'My First Print',
-    //   description: 'A beautiful 3D printed object'
+    //   description: 'A beautiful 3D printed object',
+    //   tags: ['PLA', 'functional', 'vase']
     // }
   ];
 
@@ -26,5 +28,17 @@ export class GalleryService {
 
   addImage(image: PrintImage): void {
     this.images.push(image);
+  }
+
+  getImagesByTag(tag: string): Promise<PrintImage[]> {
+    return Promise.resolve(this.images.filter(image => image.tags.includes(tag)));
+  }
+
+  getAllTags(): string[] {
+    const allTags = new Set<string>();
+    this.images.forEach(image => {
+      image.tags.forEach(tag => allTags.add(tag));
+    });
+    return Array.from(allTags);
   }
 }
