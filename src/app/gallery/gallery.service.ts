@@ -21,7 +21,42 @@ export class GalleryService {
       url: '/images/badtz-keychains.jpg',
       title: 'Badtz-Maru Keychains',
       description: '',
-      tags: ['PLA', 'multi-color', 'keychain']
+      tags: ['PLA', 'multi-color', 'keychain', 'black', 'white', 'yellow', 'red']
+    }, {
+      url: '/images/bear.jpg',
+      title: 'Bear',
+      description: '',
+      tags: ['PLA', 'white', 'mini']
+    }, {
+      url: '/images/car-assembled.jpg',
+      title: 'Car Assembled',
+      description: '',
+      tags: ['PLA', 'grey', 'model']
+    }, {
+      url: '/images/car-parts.jpg',
+      title: 'Car Parts',
+      description: '',
+      tags: ['PLA', 'grey', 'model']
+    }, {
+      url: '/images/cars-planes.jpg',
+      title: 'Cars and Planes',
+      description: '',
+      tags: ['PLA', 'multi-color', 'red', 'blue', 'light-grey', 'black']
+    }, {
+      url: '/images/color-keychains.jpg',
+      title: 'Color Keychains',
+      description: '',
+      tags: ['PLA', 'multi-color', 'keychain', 'Marvel', 'One Piece', 'Star Wars', 'stormtrooper', 'spiderman']
+    },{
+      url: '/images/colorful-keychains.jpg',
+      title: 'Colorful Keychains',
+      description: '',
+      tags: ['PLA', 'multi-color', 'keychain', 'Marvel', 'One Piece', 'Star Wars', 'Hello Kitty', 'Sanrio', 'Horror', 'stormtrooper', 'deadpool', 'wolverine', 'groot', 'captain america', 'knife']
+    }, {
+      url: '/images/console-case.jpg',
+      title: 'Handheld Console Case',
+      description: '',
+      tags: ['PLA', 'multi-color', 'case', 'functional', 'purple', 'lime-green', 'white', 'black']
     }
   ];
 
