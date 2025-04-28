@@ -73,15 +73,20 @@ export class GalleryComponent implements OnInit, OnDestroy {
     this.camera.lookAt(0, 0, 0);
 
     // Create renderer
-    this.renderer = new THREE.WebGLRenderer({ antialias: true });
+    this.renderer = new THREE.WebGLRenderer({ 
+      antialias: true,
+      powerPreference: 'high-performance'
+    });
     this.renderer.setSize(window.innerWidth, window.innerHeight);
+    this.renderer.setPixelRatio(window.devicePixelRatio);
+    this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.elementRef.nativeElement.appendChild(this.renderer.domElement);
 
     // Add lights
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
     this.scene.add(ambientLight);
 
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
     directionalLight.position.set(1, 1, 1);
     this.scene.add(directionalLight);
 
@@ -161,13 +166,45 @@ export class GalleryComponent implements OnInit, OnDestroy {
 
     images.forEach((image: PrintImage, index: number) => {
       const texture = new THREE.TextureLoader().load(image.url);
+      texture.colorSpace = THREE.SRGBColorSpace;
+      
       const materials = [
-        new THREE.MeshStandardMaterial({ map: texture }), // right
-        new THREE.MeshStandardMaterial({ map: texture }), // left
-        new THREE.MeshStandardMaterial({ map: texture }), // top
-        new THREE.MeshStandardMaterial({ map: texture }), // bottom
-        new THREE.MeshStandardMaterial({ map: texture }), // front
-        new THREE.MeshStandardMaterial({ map: texture }), // back
+        new THREE.MeshStandardMaterial({ 
+          map: texture,
+          toneMapped: true,
+          roughness: 0.1,
+          metalness: 0.1
+        }), // right
+        new THREE.MeshStandardMaterial({ 
+          map: texture,
+          toneMapped: true,
+          roughness: 0.1,
+          metalness: 0.1
+        }), // left
+        new THREE.MeshStandardMaterial({ 
+          map: texture,
+          toneMapped: true,
+          roughness: 0.1,
+          metalness: 0.1
+        }), // top
+        new THREE.MeshStandardMaterial({ 
+          map: texture,
+          toneMapped: true,
+          roughness: 0.1,
+          metalness: 0.1
+        }), // bottom
+        new THREE.MeshStandardMaterial({ 
+          map: texture,
+          toneMapped: true,
+          roughness: 0.1,
+          metalness: 0.1
+        }), // front
+        new THREE.MeshStandardMaterial({ 
+          map: texture,
+          toneMapped: true,
+          roughness: 0.1,
+          metalness: 0.1
+        }), // back
       ];
 
       const geometry = new THREE.BoxGeometry(2, 2, 2);
@@ -185,6 +222,19 @@ export class GalleryComponent implements OnInit, OnDestroy {
         shape: shape,
         position: new CANNON.Vec3(mesh.position.x, mesh.position.y, mesh.position.z)
       });
+
+      // Add random initial velocity and rotation
+      body.velocity.set(
+        (Math.random() - 0.5) * 5, // x
+        (Math.random() - 0.5) * 5, // y
+        (Math.random() - 0.5) * 5  // z
+      );
+      
+      body.angularVelocity.set(
+        (Math.random() - 0.5) * 2, // x
+        (Math.random() - 0.5) * 2, // y
+        (Math.random() - 0.5) * 2  // z
+      );
 
       this.world.addBody(body);
       this.scene.add(mesh);
