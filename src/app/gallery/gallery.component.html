@@ -2,19 +2,17 @@
   <div class="tag-controls">
     <div class="tag-list">
       <button 
-        *ngFor="let tag of tags" 
+        *ngFor="let tag of filterTags" 
+        class="tag-button" 
         [class.active]="selectedTag === tag"
-        (click)="onTagSelect(tag)"
-        class="tag-button"
-      >
+        (click)="onTagSelect(tag)">
         {{ tag }}
       </button>
     </div>
     <button 
+      class="clear-filter" 
       *ngIf="isFiltering" 
-      (click)="clearFilter()"
-      class="clear-filter"
-    >
+      (click)="clearFilter()">
       Clear Filter
     </button>
   </div>

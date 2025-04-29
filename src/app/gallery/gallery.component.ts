@@ -22,7 +22,7 @@ export class GalleryComponent implements OnInit, OnDestroy {
   private animationFrameId!: number;
   private isBrowser: boolean;
   
-  public tags: string[] = [];
+  public filterTags: string[] = [];
   public selectedTag: string = '';
   public isFiltering: boolean = false;
 
@@ -38,7 +38,7 @@ export class GalleryComponent implements OnInit, OnDestroy {
     if (this.isBrowser) {
       this.initScene();
       this.initPhysics();
-      this.loadTags();
+      this.loadFilterTags();
       this.loadImages();
       this.animate();
     }
@@ -120,10 +120,54 @@ export class GalleryComponent implements OnInit, OnDestroy {
     const groundMesh = new THREE.Mesh(groundGeometry, groundMaterial);
     groundMesh.rotation.x = -Math.PI / 2;
     this.scene.add(groundMesh);
+
+    // Add walls to constrain the cubes
+    const wallThickness = 0.5;
+    const wallHeight = 10;
+    const wallLength = 10;
+
+    // Create walls
+    const wallShapes = [
+      new CANNON.Box(new CANNON.Vec3(wallLength, wallHeight, wallThickness)), // back
+      new CANNON.Box(new CANNON.Vec3(wallLength, wallHeight, wallThickness)), // front
+      new CANNON.Box(new CANNON.Vec3(wallThickness, wallHeight, wallLength)), // left
+      new CANNON.Box(new CANNON.Vec3(wallThickness, wallHeight, wallLength))  // right
+    ];
+
+    const wallPositions = [
+      new CANNON.Vec3(0, wallHeight/2, -wallLength), // back
+      new CANNON.Vec3(0, wallHeight/2, wallLength),  // front
+      new CANNON.Vec3(-wallLength, wallHeight/2, 0), // left
+      new CANNON.Vec3(wallLength, wallHeight/2, 0)   // right
+    ];
+
+    wallShapes.forEach((shape, index) => {
+      const wallBody = new CANNON.Body({
+        mass: 0,
+        shape: shape,
+        position: wallPositions[index]
+      });
+      this.world.addBody(wallBody);
+
+      // Add wall mesh
+      const wallGeometry = new THREE.BoxGeometry(
+        shape.halfExtents.x * 2,
+        shape.halfExtents.y * 2,
+        shape.halfExtents.z * 2
+      );
+      const wallMaterial = new THREE.MeshStandardMaterial({ 
+        color: 0x333333,
+        transparent: true,
+        opacity: 0.5
+      });
+      const wallMesh = new THREE.Mesh(wallGeometry, wallMaterial);
+      wallMesh.position.copy(wallBody.position as any);
+      this.scene.add(wallMesh);
+    });
   }
 
-  private loadTags(): void {
-    this.tags = this.galleryService.getAllTags();
+  private loadFilterTags(): void {
+    this.filterTags = this.galleryService.getFilterTags();
   }
 
   public onTagSelect(tag: string): void {
@@ -210,10 +254,14 @@ export class GalleryComponent implements OnInit, OnDestroy {
       const geometry = new THREE.BoxGeometry(2, 2, 2);
       const mesh = new THREE.Mesh(geometry, materials);
       
-      // Position cubes in a grid
-      const row = Math.floor(index / 5);
-      const col = index % 5;
-      mesh.position.set(col * 3 - 6, 10 + row * 3, 0);
+      // Position cubes in a grid within the constrained space
+      const row = Math.floor(index / 3);
+      const col = index % 3;
+      mesh.position.set(
+        (col - 1) * 2.5,
+        5 + row * 2.5,
+        (Math.random() - 0.5) * 2
+      );
 
       // Create physics body
       const shape = new CANNON.Box(new CANNON.Vec3(1, 1, 1));
@@ -225,9 +273,9 @@ export class GalleryComponent implements OnInit, OnDestroy {
 
       // Add random initial velocity and rotation
       body.velocity.set(
-        (Math.random() - 0.5) * 5, // x
-        (Math.random() - 0.5) * 5, // y
-        (Math.random() - 0.5) * 5  // z
+        (Math.random() - 0.5) * 3, // x
+        (Math.random() - 0.5) * 3, // y
+        (Math.random() - 0.5) * 3  // z
       );
       
       body.angularVelocity.set(
