@@ -32,13 +32,13 @@ export class GalleryComponent implements OnInit, OnDestroy {
     @Inject(PLATFORM_ID) platformId: Object
   ) {
     this.isBrowser = isPlatformBrowser(platformId);
+    this.filterTags = this.galleryService.getFilterTags();
   }
 
   ngOnInit(): void {
     if (this.isBrowser) {
       this.initScene();
       this.initPhysics();
-      this.loadFilterTags();
       this.loadImages();
       this.animate();
     }
@@ -80,13 +80,15 @@ export class GalleryComponent implements OnInit, OnDestroy {
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
+    this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    this.renderer.toneMappingExposure = 1.5;
     this.elementRef.nativeElement.appendChild(this.renderer.domElement);
 
     // Add lights
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1.0);
     this.scene.add(ambientLight);
 
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 1.0);
     directionalLight.position.set(1, 1, 1);
     this.scene.add(directionalLight);
 
@@ -124,21 +126,22 @@ export class GalleryComponent implements OnInit, OnDestroy {
     // Add walls to constrain the cubes
     const wallThickness = 0.5;
     const wallHeight = 10;
-    const wallLength = 10;
+    const wallWidth = 6; // Width of the space (left to right)
+    const wallDepth = 3.375; // Depth of the space (front to back) - 6 * (9/16)
 
     // Create walls
     const wallShapes = [
-      new CANNON.Box(new CANNON.Vec3(wallLength, wallHeight, wallThickness)), // back
-      new CANNON.Box(new CANNON.Vec3(wallLength, wallHeight, wallThickness)), // front
-      new CANNON.Box(new CANNON.Vec3(wallThickness, wallHeight, wallLength)), // left
-      new CANNON.Box(new CANNON.Vec3(wallThickness, wallHeight, wallLength))  // right
+      new CANNON.Box(new CANNON.Vec3(wallWidth, wallHeight, wallThickness)), // back
+      new CANNON.Box(new CANNON.Vec3(wallWidth, wallHeight, wallThickness)), // front
+      new CANNON.Box(new CANNON.Vec3(wallThickness, wallHeight, wallDepth)), // left
+      new CANNON.Box(new CANNON.Vec3(wallThickness, wallHeight, wallDepth))  // right
     ];
 
     const wallPositions = [
-      new CANNON.Vec3(0, wallHeight/2, -wallLength), // back
-      new CANNON.Vec3(0, wallHeight/2, wallLength),  // front
-      new CANNON.Vec3(-wallLength, wallHeight/2, 0), // left
-      new CANNON.Vec3(wallLength, wallHeight/2, 0)   // right
+      new CANNON.Vec3(0, wallHeight/2, -wallDepth), // back
+      new CANNON.Vec3(0, wallHeight/2, wallDepth),  // front
+      new CANNON.Vec3(-wallWidth, wallHeight/2, 0), // left
+      new CANNON.Vec3(wallWidth, wallHeight/2, 0)   // right
     ];
 
     wallShapes.forEach((shape, index) => {
@@ -164,10 +167,6 @@ export class GalleryComponent implements OnInit, OnDestroy {
       wallMesh.position.copy(wallBody.position as any);
       this.scene.add(wallMesh);
     });
-  }
-
-  private loadFilterTags(): void {
-    this.filterTags = this.galleryService.getFilterTags();
   }
 
   public onTagSelect(tag: string): void {
@@ -216,65 +215,77 @@ export class GalleryComponent implements OnInit, OnDestroy {
         new THREE.MeshStandardMaterial({ 
           map: texture,
           toneMapped: true,
-          roughness: 0.1,
-          metalness: 0.1
+          roughness: 0.0,
+          metalness: 0.0,
+          emissive: 0x000000,
+          emissiveIntensity: 0.0
         }), // right
         new THREE.MeshStandardMaterial({ 
           map: texture,
           toneMapped: true,
-          roughness: 0.1,
-          metalness: 0.1
+          roughness: 0.0,
+          metalness: 0.0,
+          emissive: 0x000000,
+          emissiveIntensity: 0.0
         }), // left
         new THREE.MeshStandardMaterial({ 
           map: texture,
           toneMapped: true,
-          roughness: 0.1,
-          metalness: 0.1
+          roughness: 0.0,
+          metalness: 0.0,
+          emissive: 0x000000,
+          emissiveIntensity: 0.0
         }), // top
         new THREE.MeshStandardMaterial({ 
           map: texture,
           toneMapped: true,
-          roughness: 0.1,
-          metalness: 0.1
+          roughness: 0.0,
+          metalness: 0.0,
+          emissive: 0x000000,
+          emissiveIntensity: 0.0
         }), // bottom
         new THREE.MeshStandardMaterial({ 
           map: texture,
           toneMapped: true,
-          roughness: 0.1,
-          metalness: 0.1
+          roughness: 0.0,
+          metalness: 0.0,
+          emissive: 0x000000,
+          emissiveIntensity: 0.0
         }), // front
         new THREE.MeshStandardMaterial({ 
           map: texture,
           toneMapped: true,
-          roughness: 0.1,
-          metalness: 0.1
+          roughness: 0.0,
+          metalness: 0.0,
+          emissive: 0x000000,
+          emissiveIntensity: 0.0
         }), // back
       ];
 
       const geometry = new THREE.BoxGeometry(2, 2, 2);
       const mesh = new THREE.Mesh(geometry, materials);
       
-      // Position cubes in a grid within the constrained space
+      // Position cubes higher up and spread out
       const row = Math.floor(index / 3);
       const col = index % 3;
       mesh.position.set(
         (col - 1) * 2.5,
-        5 + row * 2.5,
+        30 + row * 2.5, // Start much higher
         (Math.random() - 0.5) * 2
       );
 
       // Create physics body
       const shape = new CANNON.Box(new CANNON.Vec3(1, 1, 1));
       const body = new CANNON.Body({
-        mass: 1,
+        mass: 1, // Restored original mass
         shape: shape,
         position: new CANNON.Vec3(mesh.position.x, mesh.position.y, mesh.position.z)
       });
 
-      // Add random initial velocity and rotation
+      // Add random initial velocity with strong downward component
       body.velocity.set(
         (Math.random() - 0.5) * 3, // x
-        (Math.random() - 0.5) * 3, // y
+        -(10 + Math.random() * 10), // y (downward between 10 and 20)
         (Math.random() - 0.5) * 3  // z
       );
       
