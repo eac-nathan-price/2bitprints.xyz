@@ -32,7 +32,6 @@ export class GalleryComponent implements OnInit, OnDestroy {
     @Inject(PLATFORM_ID) platformId: Object
   ) {
     this.isBrowser = isPlatformBrowser(platformId);
-    this.filterTags = this.galleryService.getFilterTags();
   }
 
   ngOnInit(): void {
@@ -42,6 +41,8 @@ export class GalleryComponent implements OnInit, OnDestroy {
       this.loadImages();
       this.animate();
     }
+    // Initialize filter tags after component is ready
+    this.filterTags = this.galleryService.getFilterTags();
   }
 
   ngOnDestroy(): void {
@@ -69,8 +70,8 @@ export class GalleryComponent implements OnInit, OnDestroy {
       0.1,
       1000
     );
-    this.camera.position.set(0, 5, 10);
-    this.camera.lookAt(0, 0, 0);
+    this.camera.position.set(0, 7, 9);
+    this.camera.lookAt(0, 4, 0);
 
     // Create renderer
     this.renderer = new THREE.WebGLRenderer({ 
@@ -126,8 +127,8 @@ export class GalleryComponent implements OnInit, OnDestroy {
     // Add walls to constrain the cubes
     const wallThickness = 0.5;
     const wallHeight = 10;
-    const wallWidth = 6; // Width of the space (left to right)
-    const wallDepth = 3.375; // Depth of the space (front to back) - 6 * (9/16)
+    const wallWidth = 12; // Doubled from 6 to 12 units
+    const wallDepth = 3.375; // Keeping the same depth
 
     // Create walls
     const wallShapes = [

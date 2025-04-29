@@ -17,7 +17,7 @@ export class GalleryService {
       tags: ['amiga', 'retro', 'functional', 'electronics'],
     },
     {
-      url: '/images/badtz-maru-keychains.jpg',
+      url: '/images/badtz-keychains.jpg',
       title: 'Badtz-Maru Keychains',
       tags: ['sanrio', 'keychain', 'mini', 'cute'],
     },
