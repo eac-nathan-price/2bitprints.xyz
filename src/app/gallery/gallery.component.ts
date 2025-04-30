@@ -273,11 +273,16 @@ export class GalleryComponent implements OnInit, OnDestroy {
       const geometry = new THREE.BoxGeometry(2, 2, 2);
       const mesh = new THREE.Mesh(geometry, materials);
       
-      // Position new cubes higher up
+      // Position new cubes higher up within the wall boundaries
+      const wallWidth = 12;
+      const wallDepth = 3.375;
+      const cubeSize = 2; // Half of the cube size (1 unit) plus a small buffer
+      const buffer = 0.5; // Small buffer to prevent cubes from touching walls
+      
       mesh.position.set(
-        (Math.random() - 0.5) * 10, // Random x position within the wider space
+        (Math.random() - 0.5) * (wallWidth - cubeSize - buffer), // Random x position within walls
         30 + index * 0.5, // Stagger the height slightly
-        (Math.random() - 0.5) * 2 // Random z position within the depth
+        (Math.random() - 0.5) * (wallDepth - cubeSize - buffer) // Random z position within walls
       );
 
       // Create physics body
