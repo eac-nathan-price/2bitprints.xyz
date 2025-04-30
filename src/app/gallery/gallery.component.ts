@@ -21,10 +21,13 @@ export class GalleryComponent implements OnInit, OnDestroy {
   private cubes: { mesh: THREE.Mesh; body: CANNON.Body; image: PrintImage }[] = [];
   private animationFrameId!: number;
   private isBrowser: boolean;
+  private colorIntervalId: any;
   
   public filterTags: string[] = [];
   public selectedTag: string = '';
   public isFiltering: boolean = false;
+  public titleColor: string = 'hsl(180, 75%, 75%)';
+  private currentHue: number = 180;
 
   constructor(
     private elementRef: ElementRef,
@@ -40,6 +43,7 @@ export class GalleryComponent implements OnInit, OnDestroy {
       this.initPhysics();
       this.updateFilteredCubes();
       this.animate();
+      this.startColorAnimation();
     }
     // Initialize filter tags after component is ready
     this.filterTags = this.galleryService.getFilterTags();
@@ -49,6 +53,9 @@ export class GalleryComponent implements OnInit, OnDestroy {
     if (this.isBrowser) {
       if (this.animationFrameId) {
         cancelAnimationFrame(this.animationFrameId);
+      }
+      if (this.colorIntervalId) {
+        clearInterval(this.colorIntervalId);
       }
       if (this.renderer) {
         this.renderer.dispose();
@@ -327,5 +334,21 @@ export class GalleryComponent implements OnInit, OnDestroy {
     });
 
     this.renderer.render(this.scene, this.camera);
+  }
+
+  private startColorAnimation(): void {
+    this.colorIntervalId = setInterval(() => {
+      // Calculate new hue (at least 60 degrees different)
+      const hueChange = 60 + Math.random() * 240; // Random between 60 and 300
+      this.currentHue = (this.currentHue + hueChange) % 360;
+      
+      // Random saturation between 70 and 80
+      const saturation = 70 + Math.random() * 10;
+      
+      // Random lightness between 60 and 90
+      const lightness = 60 + Math.random() * 30;
+      
+      this.titleColor = `hsl(${this.currentHue}, ${saturation}%, ${lightness}%)`;
+    }, 1000);
   }
 }
