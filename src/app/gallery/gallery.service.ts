@@ -14,12 +14,12 @@ export class GalleryService {
     {
       url: '/images/amiga-hdmi-mod.jpg',
       title: 'Amiga HDMI Mod',
-      tags: ['amiga', 'retro', 'functional', 'electronics'],
+      tags: ['PLA', 'desert-tan', 'functional', 'case'],
     },
     {
       url: '/images/badtz-keychains.jpg',
       title: 'Badtz-Maru Keychains',
-      tags: ['sanrio', 'keychain', 'mini', 'cute'],
+      tags: ['PLA', 'sanrio', 'keychain', 'multi-color', 'black', 'white', 'yellow', 'red'],
     },
     {
       url: '/images/bear.jpg',
