@@ -38,7 +38,7 @@ export class GalleryComponent implements OnInit, OnDestroy {
     if (this.isBrowser) {
       this.initScene();
       this.initPhysics();
-      this.loadImages();
+      this.updateFilteredCubes();
       this.animate();
     }
     // Initialize filter tags after component is ready
@@ -173,36 +173,43 @@ export class GalleryComponent implements OnInit, OnDestroy {
   public onTagSelect(tag: string): void {
     this.selectedTag = tag;
     this.isFiltering = true;
-    this.clearScene();
-    this.loadImagesByTag(tag);
+    this.updateFilteredCubes();
   }
 
   public clearFilter(): void {
     this.selectedTag = '';
     this.isFiltering = false;
-    this.clearScene();
-    this.loadImages();
+    this.updateFilteredCubes();
   }
 
-  private clearScene(): void {
-    if (!this.isBrowser) return;
+  private async updateFilteredCubes(): Promise<void> {
+    const currentImages = this.cubes.map(cube => cube.image);
+    const filteredImages = this.isFiltering 
+      ? await this.galleryService.getImagesByTag(this.selectedTag)
+      : await this.galleryService.getImages();
 
-    // Remove all cubes from the scene and physics world
-    this.cubes.forEach(cube => {
+    // Remove cubes that are no longer in the filtered set
+    const cubesToRemove = this.cubes.filter(cube => 
+      !filteredImages.some(img => img.url === cube.image.url)
+    );
+    
+    cubesToRemove.forEach(cube => {
       this.scene.remove(cube.mesh);
       this.world.removeBody(cube.body);
+      const index = this.cubes.indexOf(cube);
+      if (index > -1) {
+        this.cubes.splice(index, 1);
+      }
     });
-    this.cubes = [];
-  }
 
-  private async loadImagesByTag(tag: string): Promise<void> {
-    const images = await this.galleryService.getImagesByTag(tag);
-    this.createCubes(images);
-  }
+    // Add new cubes that aren't already in the scene
+    const imagesToAdd = filteredImages.filter(img => 
+      !currentImages.some(current => current.url === img.url)
+    );
 
-  private async loadImages(): Promise<void> {
-    const images = await this.galleryService.getImages();
-    this.createCubes(images);
+    if (imagesToAdd.length > 0) {
+      this.createCubes(imagesToAdd);
+    }
   }
 
   private createCubes(images: PrintImage[]): void {
@@ -266,19 +273,17 @@ export class GalleryComponent implements OnInit, OnDestroy {
       const geometry = new THREE.BoxGeometry(2, 2, 2);
       const mesh = new THREE.Mesh(geometry, materials);
       
-      // Position cubes higher up and spread out
-      const row = Math.floor(index / 3);
-      const col = index % 3;
+      // Position new cubes higher up
       mesh.position.set(
-        (col - 1) * 2.5,
-        30 + row * 2.5, // Start much higher
-        (Math.random() - 0.5) * 2
+        (Math.random() - 0.5) * 10, // Random x position within the wider space
+        30 + index * 0.5, // Stagger the height slightly
+        (Math.random() - 0.5) * 2 // Random z position within the depth
       );
 
       // Create physics body
       const shape = new CANNON.Box(new CANNON.Vec3(1, 1, 1));
       const body = new CANNON.Body({
-        mass: 1, // Restored original mass
+        mass: 1,
         shape: shape,
         position: new CANNON.Vec3(mesh.position.x, mesh.position.y, mesh.position.z)
       });
