@@ -14,12 +14,18 @@
   top: 20px;
   left: 20px;
   z-index: 100;
-  background: rgba(0, 0, 0, 0.7);
   padding: 15px;
-  border-radius: 8px;
-  backdrop-filter: blur(5px);
   pointer-events: auto;
   min-width: 200px;
+}
+
+.retro-title {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 24px;
+  color: white;
+  text-shadow: 2px 2px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000;
+  margin: 0 0 15px 0;
+  letter-spacing: 2px;
 }
 
 .tag-list {
