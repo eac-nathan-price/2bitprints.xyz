@@ -28,10 +28,10 @@ jobs:
         run: npm install
 
       - name: Build the Application
-        run: npx ng build
+        run: npm run build
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: dist/browser
+          publish_dir: dist/2bitprints.xyz/browser
