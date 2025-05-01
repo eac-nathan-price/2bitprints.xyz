@@ -536,12 +536,12 @@ export class GalleryComponent implements OnInit, OnDestroy {
 
     const { x, y, z } = event.accelerationIncludingGravity;
     
-    // Scale the acceleration to reasonable values
-    const scale = 0.5;
+    // Scale the acceleration to reasonable values and reverse the direction
+    const scale = 0.2; // Reduced from 0.5 to make the effect less dramatic
     const acceleration = new THREE.Vector3(
-      (x || 0) * scale,
-      (y || 0) * scale,
-      (z || 0) * scale
+      -(x || 0) * scale, // Reverse X direction
+      -(y || 0) * scale, // Reverse Y direction
+      -(z || 0) * scale  // Reverse Z direction
     );
 
     // Apply acceleration to all cubes
@@ -551,10 +551,10 @@ export class GalleryComponent implements OnInit, OnDestroy {
       cube.body.velocity.y += acceleration.y;
       cube.body.velocity.z += acceleration.z;
       
-      // Add some rotation based on acceleration
-      cube.body.angularVelocity.x += acceleration.x * 0.5;
-      cube.body.angularVelocity.y += acceleration.y * 0.5;
-      cube.body.angularVelocity.z += acceleration.z * 0.5;
+      // Add some rotation based on acceleration (also reversed)
+      cube.body.angularVelocity.x += -acceleration.x * 0.5;
+      cube.body.angularVelocity.y += -acceleration.y * 0.5;
+      cube.body.angularVelocity.z += -acceleration.z * 0.5;
     });
   }
 

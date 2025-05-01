@@ -25,10 +25,16 @@
 
 .title-row {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  justify-content: flex-start;
   margin-bottom: 20px;
   position: relative;
+  gap: 64px;
+  min-height: 40px;
+
+  @media (max-width: 768px) {
+    gap: 16px;
+  }
 }
 
 .spacer {
@@ -57,14 +63,31 @@
   transition: all 0.3s ease;
   text-decoration: none;
   text-shadow: 2px 2px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000;
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
   line-height: 1.2;
-  bottom: 0;
+  white-space: nowrap;
   
   &:hover {
-    transform: translateX(-50%) scale(1.25);
+    transform: scale(1.25);
+  }
+
+  @media (min-width: 768px) {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    
+    &:hover {
+      transform: translateX(-50%) scale(1.25);
+    }
+  }
+
+  @media (max-width: 767px) {
+    margin-left: auto;
+  }
+
+  @media (max-width: 480px) {
+    margin-left: 0;
+    width: 100%;
+    text-align: left;
   }
 }
 
@@ -73,6 +96,7 @@
   flex-wrap: wrap;
   gap: 8px;
   max-width: 100%;
+  padding-right: 32px;
 }
 
 .tag-button {
@@ -114,7 +138,9 @@
   justify-content: center;
   text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
   padding: 0;
-  margin-left: 4px;
+  position: absolute;
+  right: 0;
+  top: 0;
   
   &:hover {
     background: rgba(255, 255, 255, 0.2);

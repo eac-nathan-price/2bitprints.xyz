@@ -14,12 +14,12 @@ export class GalleryService {
     {
       url: '/images/amiga-hdmi-mod.jpg',
       title: 'Amiga HDMI Mod',
-      tags: ['PLA', 'desert-tan', 'functional', 'case'],
+      tags: ['PLA', 'desert-tan', 'functional', 'case', 'design'],
     },
     {
       url: '/images/badtz-keychains.jpg',
       title: 'Badtz-Maru Keychains',
-      tags: ['PLA', 'sanrio', 'keychain', 'multi-color', 'black', 'white', 'yellow', 'red'],
+      tags: ['PLA', 'sanrio', 'keychain', 'multi-color', 'black', 'white', 'yellow', 'red', 'design'],
     },
     {
       url: '/images/bear.jpg',
@@ -28,15 +28,15 @@ export class GalleryService {
     }, {
       url: '/images/car-assembled.jpg',
       title: 'Car Assembled',
-      tags: ['PLA', 'grey', 'model']
+      tags: ['PLA', 'grey', 'model', 'design']
     }, {
       url: '/images/car-parts.jpg',
       title: 'Car Parts',
-      tags: ['PLA', 'grey', 'model']
+      tags: ['PLA', 'grey', 'model', 'design']
     }, {
       url: '/images/cars-planes.jpg',
       title: 'Cars and Planes',
-      tags: ['PLA', 'multi-color', 'red', 'blue', 'light-grey', 'black']
+      tags: ['PLA', 'multi-color', 'red', 'blue', 'light-grey', 'black', 'design']
     }, {
       url: '/images/color-keychains.jpg',
       title: 'Color Keychains',
@@ -48,7 +48,7 @@ export class GalleryService {
     }, {
       url: '/images/console-case.jpg',
       title: 'Handheld Console Case',
-      tags: ['PLA', 'multi-color', 'case', 'functional', 'purple', 'lime-green', 'white', 'black']
+      tags: ['PLA', 'multi-color', 'case', 'functional', 'purple', 'lime-green', 'white', 'black', 'design']
     },
     {
       url: '/images/cubone-hairpin.jpg',
@@ -93,7 +93,7 @@ export class GalleryService {
     {
       url: '/images/frogchairs.jpg',
       title: 'Frog Chairs',
-      tags: ['PLA', 'multi-color', 'model', 'green', 'lime-green', 'magenta', 'cyan']
+      tags: ['PLA', 'multi-color', 'model', 'green', 'lime-green', 'magenta', 'cyan', 'design']
     },
     {
       url: '/images/hauntedmansion-busts.jpg',
@@ -153,7 +153,7 @@ export class GalleryService {
     {
       url: '/images/relief-sculpture.jpg',
       title: 'Relief Sculpture',
-      tags: ['PLA', 'photo', 'ornament', 'light-grey']
+      tags: ['PLA', 'photo', 'ornament', 'light-grey', 'design']
     },
     {
       url: '/images/snoopy.jpg',
@@ -169,6 +169,21 @@ export class GalleryService {
       url: '/images/trek-models.jpg',
       title: 'Star Trek Models',
       tags: ['PLA', 'white', 'model', 'star trek']
+    },
+    {
+      url: '/images/fridge-handle.png',
+      title: 'Fridge Handle',
+      tags: ['design', 'functional']
+    },
+    {
+      url: '/images/hdmi-board.png',
+      title: 'HDMI Board',
+      tags: ['design', 'functional']
+    },
+    {
+      url: '/images/wall-organizer.jpg',
+      title: 'Wall Organizer',
+      tags: ['design', 'PLA', 'black', 'functional']
     }
   ];
 
@@ -180,7 +195,8 @@ export class GalleryService {
     'mini',
     'model',
     'functional',
-    'filament'
+    'filament',
+    'design'
   ];
 
   getImages(): Promise<PrintImage[]> {
