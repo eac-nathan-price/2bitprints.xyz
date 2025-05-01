@@ -14,7 +14,7 @@ export class GalleryService {
     {
       url: '/images/amiga-hdmi-mod.jpg',
       title: 'Amiga HDMI Mod',
-      tags: ['PLA', 'desert-tan', 'functional', 'case', 'design'],
+      tags: ['PLA', 'desert-tan', 'functional', 'case'],
     },
     {
       url: '/images/badtz-keychains.jpg',
@@ -184,6 +184,36 @@ export class GalleryService {
       url: '/images/wall-organizer.jpg',
       title: 'Wall Organizer',
       tags: ['design', 'PLA', 'black', 'functional']
+    },
+    {
+      url: '/images/trek-pride.jpg',
+      title: 'Star Trek Comm Badge',
+      tags: ['design', 'PLA', 'black', 'cosplay', 'star trek', 'gold', 'red', 'orange', 'yellow', 'green', 'blue', 'purple']
+    },
+    {
+      url: '/images/keys.jpg',
+      title: 'Keys',
+      tags: ['PLA', 'model', 'red', 'green']
+    },
+    {
+      url: '/images/knife.jpg',
+      title: 'Knife',
+      tags: ['PLA', 'model', 'red', 'black', 'gold']
+    },
+    {
+      url: '/images/mooshroom.jpg',
+      title: 'Minecraft Mooshroom',
+      tags: ['PLA', 'keychain', 'red', 'black', 'white', 'grey', 'minecraft']
+    },
+    {
+      url: '/images/name-keychains.jpg',
+      title: 'Name Keychains',
+      tags: ['PLA', 'keychain', 'design', 'name', 'marvel', 'groot', 'sanrio']
+    },
+    {
+      url: '/images/retro-keychains.jpg',
+      title: 'Retro Keychains',
+      tags: ['PLA', 'keychain', 'red', 'white', 'black', 'design', 'desert-tan', 'minecraft', 'mario']
     }
   ];
 
