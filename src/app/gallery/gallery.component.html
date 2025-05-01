@@ -1,21 +1,23 @@
 <div class="gallery-container">
-  <div class="tag-controls">
-    <h1 class="retro-title" [style.color]="titleColor">2BitPrints</h1>
-    <div class="tag-list">
+  <div class="controls-container" [style.transform]="'perspective(1000px) rotateX(' + rotationX + 'deg) rotateY(' + rotationY + 'deg)'">
+    <div class="tag-controls">
+      <h1 class="retro-title" [style.color]="titleColor">2BitPrints</h1>
+      <div class="tag-list">
+        <button 
+          *ngFor="let tag of filterTags" 
+          class="tag-button" 
+          [class.active]="selectedTag === tag"
+          (click)="onTagSelect(tag)">
+          {{ tag }}
+        </button>
+      </div>
       <button 
-        *ngFor="let tag of filterTags" 
-        class="tag-button" 
-        [class.active]="selectedTag === tag"
-        (click)="onTagSelect(tag)">
-        {{ tag }}
+        class="clear-filter" 
+        *ngIf="isFiltering" 
+        (click)="clearFilter()">
+        Clear Filter
       </button>
     </div>
-    <button 
-      class="clear-filter" 
-      *ngIf="isFiltering" 
-      (click)="clearFilter()">
-      Clear Filter
-    </button>
   </div>
   <!-- The Three.js canvas will be inserted here -->
 </div>

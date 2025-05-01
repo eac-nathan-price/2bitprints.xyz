@@ -9,24 +9,31 @@
   padding: 0;
 }
 
-.tag-controls {
+.controls-container {
   position: fixed;
   top: 20px;
   left: 20px;
   z-index: 100;
+  transform-style: preserve-3d;
+  transition: transform 0.1s ease-out;
+  will-change: transform;
+}
+
+.tag-controls {
   padding: 15px;
   pointer-events: auto;
   min-width: 200px;
+  transform: translateZ(0);
 }
 
 .retro-title {
   font-family: 'Press Start 2P', monospace;
   font-size: 24px;
-  color: white;
   text-shadow: 2px 2px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000;
   margin: 0 0 15px 0;
   letter-spacing: 2px;
   transition: color 1s ease;
+  transform: translateZ(20px);
 }
 
 .tag-list {
@@ -44,8 +51,10 @@
   border-radius: 16px;
   cursor: pointer;
   transition: all 0.2s ease;
-  font-size: 14px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 10px;
   white-space: nowrap;
+  text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
 
   &:hover {
     background: rgba(255, 255, 255, 0.2);
@@ -65,8 +74,10 @@
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.2s ease;
-  font-size: 14px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 10px;
   width: 100%;
+  text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
 
   &:hover {
     background: rgba(255, 255, 255, 0.2);

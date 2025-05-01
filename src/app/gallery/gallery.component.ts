@@ -28,6 +28,8 @@ export class GalleryComponent implements OnInit, OnDestroy {
   public isFiltering: boolean = false;
   public titleColor: string = 'hsl(180, 75%, 75%)';
   private currentHue: number = 180;
+  public rotationX: number = 0;
+  public rotationY: number = 0;
 
   constructor(
     private elementRef: ElementRef,
@@ -44,8 +46,8 @@ export class GalleryComponent implements OnInit, OnDestroy {
       this.updateFilteredCubes();
       this.animate();
       this.startColorAnimation();
+      this.initMouseTracking();
     }
-    // Initialize filter tags after component is ready
     this.filterTags = this.galleryService.getFilterTags();
   }
 
@@ -60,6 +62,7 @@ export class GalleryComponent implements OnInit, OnDestroy {
       if (this.renderer) {
         this.renderer.dispose();
       }
+      window.removeEventListener('mousemove', this.handleMouseMove);
     }
   }
 
@@ -350,5 +353,19 @@ export class GalleryComponent implements OnInit, OnDestroy {
       
       this.titleColor = `hsl(${this.currentHue}, ${saturation}%, ${lightness}%)`;
     }, 1000);
+  }
+
+  private initMouseTracking(): void {
+    window.addEventListener('mousemove', this.handleMouseMove.bind(this));
+  }
+
+  private handleMouseMove(event: MouseEvent): void {
+    // Calculate mouse position as a percentage of window size
+    const xPercent = (event.clientX / window.innerWidth) * 2 - 1; // -1 to 1
+    const yPercent = (event.clientY / window.innerHeight) * 2 - 1; // -1 to 1
+    
+    // Calculate rotation (clamped to 5 degrees)
+    this.rotationY = xPercent * 5;
+    this.rotationX = -yPercent * 5;
   }
 }
