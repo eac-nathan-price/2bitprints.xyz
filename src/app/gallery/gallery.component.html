@@ -10,13 +10,14 @@
           (click)="onTagSelect(tag)">
           {{ tag }}
         </button>
+        <button 
+          class="clear-button" 
+          *ngIf="isFiltering" 
+          (click)="clearFilter()"
+          title="Clear Filter">
+          ×
+        </button>
       </div>
-      <button 
-        class="clear-filter" 
-        *ngIf="isFiltering" 
-        (click)="clearFilter()">
-        Clear Filter
-      </button>
     </div>
   </div>
   <!-- The Three.js canvas will be inserted here -->
