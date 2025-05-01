@@ -27,6 +27,7 @@ export class GalleryComponent implements OnInit, OnDestroy {
   private raycaster: THREE.Raycaster = new THREE.Raycaster();
   private mouse: THREE.Vector2 = new THREE.Vector2();
   public selectedImage: PrintImage | null = null;
+  public isLoading: boolean = true;
   
   public filterTags: string[] = [];
   public selectedTag: string = '';
@@ -36,6 +37,10 @@ export class GalleryComponent implements OnInit, OnDestroy {
   public rotationX: number = 0;
   public rotationY: number = 0;
   private cubeSpacing: any;
+  private textureCache: Map<string, THREE.Texture> = new Map();
+  private spawnQueue: { image: PrintImage, spawnIndex: number }[] = [];
+  private isSpawning: boolean = false;
+  private lastSpawnTime: number = 0;
 
   constructor(
     private elementRef: ElementRef,
@@ -52,7 +57,7 @@ export class GalleryComponent implements OnInit, OnDestroy {
     if (this.isBrowser) {
       this.initScene();
       await this.initWalls();
-      await this.updateFilteredCubes();
+      await this.startLoadingAndSpawning();
       this.animate();
       this.startColorAnimation();
       this.initMouseTracking();
@@ -321,6 +326,136 @@ export class GalleryComponent implements OnInit, OnDestroy {
     this.world.addBody(secondStepFrontWallBody);
   }
 
+  private async startLoadingAndSpawning(): Promise<void> {
+    const images = await this.galleryService.getImages();
+    console.log('Starting to load', images.length, 'images');
+    
+    // Randomize the order of images
+    const shuffledImages = [...images].sort(() => Math.random() - 0.5);
+    
+    let loadedImages = 0;
+    const totalImages = shuffledImages.length;
+    
+    // Start loading all images and queue spawns as they load
+    shuffledImages.forEach((image, index) => {
+      if (!this.textureCache.has(image.url)) {
+        const loader = new THREE.TextureLoader();
+        loader.load(
+          image.url,
+          (texture) => {
+            const now = performance.now();
+            const timeSinceLastSpawn = this.lastSpawnTime ? now - this.lastSpawnTime : 0;
+            console.log(`Image loaded: ${image.url} (${timeSinceLastSpawn.toFixed(1)}ms since last spawn)`);
+            texture.colorSpace = THREE.SRGBColorSpace;
+            this.textureCache.set(image.url, texture);
+            
+            loadedImages++;
+            
+            // If this is the first image to load, spawn it immediately
+            if (this.isLoading) {
+              console.log('First image loaded, spawning immediately');
+              this.isLoading = false;
+              this.lastSpawnTime = now;
+              this.createCube(image, index).catch(error => {
+                console.error('Error spawning first cube:', error);
+              });
+            } else {
+              // Add to spawn queue for subsequent images
+              this.spawnQueue.push({ image, spawnIndex: index });
+              console.log(`Added to queue, current queue length: ${this.spawnQueue.length} (${timeSinceLastSpawn.toFixed(1)}ms since last spawn)`);
+              
+              // Check if we can spawn the next cube
+              if (timeSinceLastSpawn >= 100) {
+                this.processSpawnQueue();
+              }
+            }
+            
+            // If all images are loaded, start continuous spawning
+            if (loadedImages === totalImages) {
+              console.log('All images loaded, starting continuous spawning');
+              this.continueSpawning();
+            }
+          },
+          undefined,
+          (error) => {
+            console.error('Error loading image:', image.url, error);
+            loadedImages++; // Count failed loads to ensure we don't get stuck
+            if (loadedImages === totalImages) {
+              this.continueSpawning();
+            }
+          }
+        );
+      } else {
+        const now = performance.now();
+        const timeSinceLastSpawn = this.lastSpawnTime ? now - this.lastSpawnTime : 0;
+        
+        loadedImages++;
+        
+        // If texture is already cached
+        if (this.isLoading) {
+          // If this is the first cached image, spawn it immediately
+          console.log(`First cached image found, spawning immediately (${timeSinceLastSpawn.toFixed(1)}ms since last spawn)`);
+          this.isLoading = false;
+          this.lastSpawnTime = now;
+          this.createCube(image, index).catch(error => {
+            console.error('Error spawning first cube:', error);
+          });
+        } else {
+          // Add to spawn queue for subsequent cached images
+          this.spawnQueue.push({ image, spawnIndex: index });
+          console.log(`Added cached image to queue, current queue length: ${this.spawnQueue.length} (${timeSinceLastSpawn.toFixed(1)}ms since last spawn)`);
+          
+          // Check if we can spawn the next cube
+          if (timeSinceLastSpawn >= 100) {
+            this.processSpawnQueue();
+          }
+        }
+        
+        // If all images are loaded, start continuous spawning
+        if (loadedImages === totalImages) {
+          console.log('All images loaded, starting continuous spawning');
+          this.continueSpawning();
+        }
+      }
+    });
+  }
+
+  private continueSpawning(): void {
+    if (this.spawnQueue.length === 0) {
+      console.log('Spawn queue is empty');
+      return;
+    }
+    
+    const now = performance.now();
+    const timeSinceLastSpawn = this.lastSpawnTime ? now - this.lastSpawnTime : 0;
+    
+    if (timeSinceLastSpawn >= 100) {
+      this.processSpawnQueue();
+    }
+    
+    // Schedule next check
+    setTimeout(() => this.continueSpawning(), 100);
+  }
+
+  private processSpawnQueue(): void {
+    if (this.isSpawning || this.spawnQueue.length === 0) return;
+    
+    const now = performance.now();
+    const timeSinceLastSpawn = this.lastSpawnTime ? now - this.lastSpawnTime : 0;
+    
+    // Only spawn if it's been at least 100ms since last spawn
+    if (timeSinceLastSpawn < 100) return;
+    
+    this.isSpawning = true;
+    const { image, spawnIndex } = this.spawnQueue.shift()!;
+    console.log(`Processing spawn for image: ${image.url}, queue length: ${this.spawnQueue.length} (${timeSinceLastSpawn.toFixed(1)}ms since last spawn)`);
+    
+    this.createCube(image, spawnIndex).finally(() => {
+      this.isSpawning = false;
+      this.lastSpawnTime = now;
+    });
+  }
+
   public onTagSelect(tag: string): void {
     this.selectedTag = tag;
     this.isFiltering = true;
@@ -343,6 +478,8 @@ export class GalleryComponent implements OnInit, OnDestroy {
       ? await this.galleryService.getImagesByTag(this.selectedTag)
       : await this.galleryService.getImages();
 
+    console.log('Starting to process', filteredImages.length, 'images');
+
     // Remove cubes that are no longer in the filtered set
     const cubesToRemove = this.cubes.filter(cube => 
       !filteredImages.some(img => img.url === cube.image.url)
@@ -362,13 +499,21 @@ export class GalleryComponent implements OnInit, OnDestroy {
       !currentImages.some(current => current.url === img.url)
     );
 
-    // Create cubes asynchronously as images load
-    for (const image of imagesToAdd) {
-      await this.createCube(image);
-    }
+    console.log('Queueing', imagesToAdd.length, 'new cubes');
+
+    // Clear existing spawn queue
+    this.spawnQueue = [];
+
+    // Add cubes to spawn queue
+    imagesToAdd.forEach((image, index) => {
+      this.spawnQueue.push({ image, spawnIndex: index });
+    });
+
+    // Start continuous spawning process
+    this.continueSpawning();
   }
 
-  private async createCube(image: PrintImage): Promise<void> {
+  private async createCube(image: PrintImage, spawnIndex: number): Promise<void> {
     if (!this.isBrowser) return;
 
     const {
@@ -380,12 +525,27 @@ export class GalleryComponent implements OnInit, OnDestroy {
       cubesPerLayer
     } = this.cubeSpacing;
 
-    const texture = await new Promise<THREE.Texture>((resolve) => {
-      new THREE.TextureLoader().load(image.url, (texture) => {
-        texture.colorSpace = THREE.SRGBColorSpace;
-        resolve(texture);
+    // Get texture from cache or create new one
+    let texture = this.textureCache.get(image.url);
+    if (!texture) {
+      console.log('Texture not found in cache, loading:', image.url);
+      texture = await new Promise<THREE.Texture>((resolve, reject) => {
+        const loader = new THREE.TextureLoader();
+        loader.load(
+          image.url,
+          (texture) => {
+            texture.colorSpace = THREE.SRGBColorSpace;
+            this.textureCache.set(image.url, texture);
+            resolve(texture);
+          },
+          undefined,
+          (error) => {
+            console.error('Error loading image:', image.url, error);
+            reject(error);
+          }
+        );
       });
-    });
+    }
       
     const materials = Array(6).fill(new THREE.MeshStandardMaterial({ 
       map: texture,
@@ -400,22 +560,53 @@ export class GalleryComponent implements OnInit, OnDestroy {
     const geometry = new THREE.BoxGeometry(2, 2, 2);
     const mesh = new THREE.Mesh(geometry, materials);
     
-    const index = this.cubes.length;
-    const layerIndex = Math.floor(index / cubesPerLayer);
-    const positionInLayer = index % cubesPerLayer;
-    const row = Math.floor(positionInLayer / cubesPerColumn);
-    const column = positionInLayer % cubesPerColumn;
+    // Find a safe spawn position
+    const baseSpawnHeight = wallHeight - 25; // Base spawn height for first cube
+    const minSpawnHeight = 25; // Minimum height to ensure cubes aren't visible when spawning
+    const safetyMargin = 2.5; // Half of cube size plus some margin
     
-    const startX = -wallWidth/2 + totalCubeSize/2;
-    const startZ = -wallDepth/2 + totalCubeSize/2;
+    let position = new THREE.Vector3(0, baseSpawnHeight, 0); // Initialize with base position
+    let attempts = 0;
+    const maxAttempts = 20; // Increased attempts to find a good position
     
-    // Increase spawn height by 10 units
-    const spawnHeight = wallHeight - 10;
-    const position = new THREE.Vector3(
-      startX + (row * totalCubeSize),
-      spawnHeight - (layerIndex * totalCubeSize) - totalCubeSize/2,
-      startZ + (column * totalCubeSize)
-    );
+    do {
+      // Try different positions within the wall boundaries, ensuring we stay inside the walls
+      const startX = -wallWidth/2 + totalCubeSize;
+      const endX = wallWidth/2 - totalCubeSize;
+      const startZ = -wallDepth/2 + totalCubeSize;
+      const endZ = wallDepth/2 - totalCubeSize;
+      
+      // Find the lowest possible height that doesn't collide
+      let spawnHeight = baseSpawnHeight;
+      let foundHeight = false;
+      
+      while (!foundHeight && spawnHeight >= minSpawnHeight) {
+        position.set(
+          startX + (Math.random() * (endX - startX)),
+          spawnHeight,
+          startZ + (Math.random() * (endZ - startZ))
+        );
+        
+        if (!this.isPositionOccupied(position)) {
+          foundHeight = true;
+        } else {
+          spawnHeight -= 0.5; // Try a bit lower
+        }
+      }
+      
+      attempts++;
+      
+      // If we've tried too many times, just use the base height
+      if (attempts >= maxAttempts) {
+        position.set(
+          startX + (Math.random() * (endX - startX)),
+          Math.max(baseSpawnHeight, minSpawnHeight),
+          startZ + (Math.random() * (endZ - startZ))
+        );
+        break;
+      }
+      
+    } while (this.isPositionOccupied(position));
     
     mesh.position.copy(position);
 
@@ -440,23 +631,35 @@ export class GalleryComponent implements OnInit, OnDestroy {
       mesh.rotation.z
     );
 
-    // Increase initial downward velocity to make cubes fall faster
+    // Add initial velocity
     body.velocity.set(
-      (Math.random() - 0.5) * 2, // Increased from 0.5 to 2 for more horizontal movement
+      (Math.random() - 0.5) * 2,
       -(5 + Math.random() * 3),
-      (Math.random() - 0.5) * 2 // Increased from 0.5 to 2 for more horizontal movement
+      (Math.random() - 0.5) * 2
     );
     
-    // Increase angular velocity for more rotation
+    // Add random angular velocity
     body.angularVelocity.set(
-      (Math.random() - 0.5) * 2, // Increased from 0.5 to 2
-      (Math.random() - 0.5) * 2, // Increased from 0.5 to 2
-      (Math.random() - 0.5) * 2  // Increased from 0.5 to 2
+      (Math.random() - 0.5) * 2,
+      (Math.random() - 0.5) * 2,
+      (Math.random() - 0.5) * 2
     );
 
     this.world.addBody(body);
     this.scene.add(mesh);
     this.cubes.push({ mesh, body, image });
+
+    console.log('Cube spawned for image:', image.url, 'at height:', position.y);
+  }
+
+  private isPositionOccupied(position: THREE.Vector3): boolean {
+    const safetyMargin = 2.5; // Half of cube size plus some margin
+    return this.cubes.some(cube => {
+      const cubePos = cube.body.position;
+      return Math.abs(cubePos.x - position.x) < safetyMargin &&
+             Math.abs(cubePos.y - position.y) < safetyMargin &&
+             Math.abs(cubePos.z - position.z) < safetyMargin;
+    });
   }
 
   private animate(): void {

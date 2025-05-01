@@ -1,3 +1,7 @@
+<div class="loading-spinner" *ngIf="isLoading">
+  <div class="spinner"></div>
+</div>
+
 <div class="gallery-container">
   <div class="controls-container" [style.transform]="'perspective(1000px) rotateX(' + rotationX + 'deg) rotateY(' + rotationY + 'deg)'">
     <div class="tag-controls">

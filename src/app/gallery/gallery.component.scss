@@ -13,14 +13,18 @@
   left: 0;
   width: 100%;
   padding: 20px;
-  z-index: 10;
+  z-index: 1000;
   transform-style: preserve-3d;
+  pointer-events: auto;
+  //background: rgba(0, 0, 0, 0.1);
 }
 
 .tag-controls {
   max-width: 1200px;
   margin: 0 auto;
   position: relative;
+  pointer-events: auto;
+  z-index: 1001;
 }
 
 .title-row {
@@ -31,6 +35,8 @@
   position: relative;
   gap: 64px;
   min-height: 40px;
+  pointer-events: auto;
+  z-index: 1002;
 
   @media (max-width: 768px) {
     gap: 16px;
@@ -96,7 +102,9 @@
   flex-wrap: wrap;
   gap: 8px;
   max-width: 100%;
-  padding-right: 32px;
+  position: relative;
+  pointer-events: auto;
+  z-index: 1003;
 }
 
 .tag-button {
@@ -111,13 +119,19 @@
   border-radius: 16px;
   white-space: nowrap;
   text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
+  pointer-events: auto;
+  position: relative;
+  z-index: 1004;
   
   &:hover {
     background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.05);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
   }
   
   &.active {
     background: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
   }
 }
 
@@ -138,9 +152,7 @@
   justify-content: center;
   text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
   padding: 0;
-  position: absolute;
-  right: 0;
-  top: 0;
+  margin-left: 8px;
   
   &:hover {
     background: rgba(255, 255, 255, 0.2);
@@ -199,4 +211,32 @@
   text-align: center;
   margin-top: 10px;
   font-size: 14px;
+}
+
+.loading-spinner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
