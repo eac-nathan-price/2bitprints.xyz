@@ -22,6 +22,8 @@ export class GalleryComponent implements OnInit, OnDestroy {
   private animationFrameId!: number;
   private isBrowser: boolean;
   private colorIntervalId: any;
+  private lastWindowPosition: { x: number; y: number } = { x: 0, y: 0 };
+  private windowMoveCheckInterval: any;
   
   public filterTags: string[] = [];
   public selectedTag: string = '';
@@ -38,6 +40,9 @@ export class GalleryComponent implements OnInit, OnDestroy {
     @Inject(PLATFORM_ID) platformId: Object
   ) {
     this.isBrowser = isPlatformBrowser(platformId);
+    if (this.isBrowser) {
+      this.lastWindowPosition = { x: window.screenX, y: window.screenY };
+    }
   }
 
   async ngOnInit(): Promise<void> {
@@ -60,10 +65,15 @@ export class GalleryComponent implements OnInit, OnDestroy {
       if (this.colorIntervalId) {
         clearInterval(this.colorIntervalId);
       }
+      if (this.windowMoveCheckInterval) {
+        clearInterval(this.windowMoveCheckInterval);
+      }
       if (this.renderer) {
         this.renderer.dispose();
       }
       window.removeEventListener('mousemove', this.handleMouseMove);
+      window.removeEventListener('resize', this.handleWindowResize);
+      window.removeEventListener('devicemotion', this.handleDeviceMotion);
     }
   }
 
@@ -480,6 +490,13 @@ export class GalleryComponent implements OnInit, OnDestroy {
 
   private initMouseTracking(): void {
     window.addEventListener('mousemove', this.handleMouseMove.bind(this));
+    window.addEventListener('resize', this.handleWindowResize.bind(this));
+    if (window.DeviceMotionEvent) {
+      window.addEventListener('devicemotion', this.handleDeviceMotion.bind(this));
+    }
+    
+    // Start checking for window movement
+    this.windowMoveCheckInterval = setInterval(() => this.checkWindowMovement(), 50);
   }
 
   private handleMouseMove(event: MouseEvent): void {
@@ -490,5 +507,79 @@ export class GalleryComponent implements OnInit, OnDestroy {
     // Calculate rotation (clamped to 5 degrees)
     this.rotationY = xPercent * 5;
     this.rotationX = -yPercent * 5;
+  }
+
+  private handleWindowResize(): void {
+    // When window is resized, add some random velocity to all cubes
+    this.cubes.forEach(cube => {
+      // Add random horizontal velocity
+      cube.body.velocity.x += (Math.random() - 0.5) * 4;
+      cube.body.velocity.z += (Math.random() - 0.5) * 4;
+      
+      // Add some upward velocity
+      cube.body.velocity.y += Math.random() * 2;
+      
+      // Add some random rotation
+      cube.body.angularVelocity.x += (Math.random() - 0.5) * 2;
+      cube.body.angularVelocity.y += (Math.random() - 0.5) * 2;
+      cube.body.angularVelocity.z += (Math.random() - 0.5) * 2;
+    });
+  }
+
+  private handleDeviceMotion(event: DeviceMotionEvent): void {
+    if (!event.accelerationIncludingGravity) return;
+
+    const { x, y, z } = event.accelerationIncludingGravity;
+    
+    // Scale the acceleration to reasonable values
+    const scale = 0.5;
+    const acceleration = new THREE.Vector3(
+      (x || 0) * scale,
+      (y || 0) * scale,
+      (z || 0) * scale
+    );
+
+    // Apply acceleration to all cubes
+    this.cubes.forEach(cube => {
+      // Add acceleration to velocity
+      cube.body.velocity.x += acceleration.x;
+      cube.body.velocity.y += acceleration.y;
+      cube.body.velocity.z += acceleration.z;
+      
+      // Add some rotation based on acceleration
+      cube.body.angularVelocity.x += acceleration.x * 0.5;
+      cube.body.angularVelocity.y += acceleration.y * 0.5;
+      cube.body.angularVelocity.z += acceleration.z * 0.5;
+    });
+  }
+
+  private checkWindowMovement(): void {
+    const currentX = window.screenX;
+    const currentY = window.screenY;
+    
+    const deltaX = currentX - this.lastWindowPosition.x;
+    const deltaY = currentY - this.lastWindowPosition.y;
+    
+    // Only apply velocity if there was significant movement
+    if (Math.abs(deltaX) > 1 || Math.abs(deltaY) > 1) {
+      // Scale the movement to reasonable velocity values
+      const scale = 0.1;
+      const velocityX = deltaX * scale;
+      const velocityY = deltaY * scale;
+      
+      // Apply velocity to all cubes
+      this.cubes.forEach(cube => {
+        // Add velocity in the direction of window movement
+        cube.body.velocity.x += velocityX;
+        cube.body.velocity.y += velocityY;
+        
+        // Add some rotation based on movement
+        cube.body.angularVelocity.x += velocityY * 0.2;
+        cube.body.angularVelocity.y += velocityX * 0.2;
+      });
+    }
+    
+    // Update last position
+    this.lastWindowPosition = { x: currentX, y: currentY };
   }
 }
