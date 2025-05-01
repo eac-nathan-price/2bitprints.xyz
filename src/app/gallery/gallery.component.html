@@ -20,5 +20,12 @@
       </div>
     </div>
   </div>
-  <!-- The Three.js canvas will be inserted here -->
+
+  <div class="image-overlay" *ngIf="selectedImage" (click)="closeImage()">
+    <div class="overlay-content" (click)="$event.stopPropagation()">
+      <button class="close-button" (click)="closeImage()">×</button>
+      <img [src]="selectedImage.url" [alt]="selectedImage.title">
+      <div class="image-title">{{selectedImage.title}}</div>
+    </div>
+  </div>
 </div>

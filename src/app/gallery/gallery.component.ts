@@ -24,6 +24,9 @@ export class GalleryComponent implements OnInit, OnDestroy {
   private colorIntervalId: any;
   private lastWindowPosition: { x: number; y: number } = { x: 0, y: 0 };
   private windowMoveCheckInterval: any;
+  private raycaster: THREE.Raycaster = new THREE.Raycaster();
+  private mouse: THREE.Vector2 = new THREE.Vector2();
+  public selectedImage: PrintImage | null = null;
   
   public filterTags: string[] = [];
   public selectedTag: string = '';
@@ -74,6 +77,7 @@ export class GalleryComponent implements OnInit, OnDestroy {
       window.removeEventListener('mousemove', this.handleMouseMove);
       window.removeEventListener('resize', this.handleWindowResize);
       window.removeEventListener('devicemotion', this.handleDeviceMotion);
+      window.removeEventListener('click', this.handleClick);
     }
   }
 
@@ -494,6 +498,7 @@ export class GalleryComponent implements OnInit, OnDestroy {
     if (window.DeviceMotionEvent) {
       window.addEventListener('devicemotion', this.handleDeviceMotion.bind(this));
     }
+    window.addEventListener('click', this.handleClick.bind(this));
     
     // Start checking for window movement
     this.windowMoveCheckInterval = setInterval(() => this.checkWindowMovement(), 50);
@@ -581,5 +586,33 @@ export class GalleryComponent implements OnInit, OnDestroy {
     
     // Update last position
     this.lastWindowPosition = { x: currentX, y: currentY };
+  }
+
+  private handleClick(event: MouseEvent): void {
+    if (!this.isBrowser) return;
+
+    // Calculate mouse position in normalized device coordinates
+    this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+    // Update the picking ray with the camera and mouse position
+    this.raycaster.setFromCamera(this.mouse, this.camera);
+
+    // Calculate objects intersecting the picking ray
+    const intersects = this.raycaster.intersectObjects(
+      this.cubes.map(cube => cube.mesh)
+    );
+
+    if (intersects.length > 0) {
+      // Find the clicked cube
+      const clickedCube = this.cubes.find(cube => cube.mesh === intersects[0].object);
+      if (clickedCube) {
+        this.selectedImage = clickedCube.image;
+      }
+    }
+  }
+
+  public closeImage(): void {
+    this.selectedImage = null;
   }
 }
