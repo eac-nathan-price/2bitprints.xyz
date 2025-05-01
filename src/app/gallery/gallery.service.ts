@@ -49,6 +49,126 @@ export class GalleryService {
       url: '/images/console-case.jpg',
       title: 'Handheld Console Case',
       tags: ['PLA', 'multi-color', 'case', 'functional', 'purple', 'lime-green', 'white', 'black']
+    },
+    {
+      url: '/images/cubone-hairpin.jpg',
+      title: 'Cubone Hairpin',
+      tags: ['PLA', 'white', 'model', 'functional']
+    },
+    {
+      url: '/images/disneyland-map.jpg',
+      title: 'Disneyland Map',
+      tags: ['PLA', 'multi-color', 'model', 'white', 'black', 'cyan', 'disney', 'disneyland']
+    },
+    {
+      url: '/images/elephants.jpg',
+      title: 'Elephant Collection',
+      tags: ['PLA', 'multi-color', 'mini', 'grey', 'black', 'purple']
+    },
+    {
+      url: '/images/filament1.jpg',
+      title: 'Filament Collection 1',
+      tags: ['PLA', 'filament']
+    },
+    {
+      url: '/images/filament2.jpg',
+      title: 'Filament Collection 2',
+      tags: ['PLA', 'filament']
+    },
+    {
+      url: '/images/filamnet3.jpg',
+      title: 'Filament Collection 3',
+      tags: ['PLA', 'filament']
+    },
+    {
+      url: '/images/filament4.jpg',
+      title: 'Filament Collection 4',
+      tags: ['PLA', 'filament']
+    },
+    {
+      url: '/images/filament5.jpg',
+      title: 'Filament Collection 5',
+      tags: ['PLA', 'filament']
+    },
+    {
+      url: '/images/frogchairs.jpg',
+      title: 'Frog Chairs',
+      tags: ['PLA', 'multi-color', 'model', 'green', 'lime-green', 'magenta', 'cyan']
+    },
+    {
+      url: '/images/hauntedmansion-busts.jpg',
+      title: 'Haunted Mansion Busts',
+      tags: ['PLA', 'multi-color', 'model', 'white', 'black', 'disney', 'disneyland']
+    },
+    {
+      url: '/images/headphone-things.jpg',
+      title: 'Headphone Accessories',
+      tags: ['PLA', 'black', 'functional']
+    },
+    {
+      url: '/images/hellokitty-keychains.jpg',
+      title: 'Hello Kitty Keychains',
+      tags: ['PLA', 'multi-color', 'keychain', 'Hello Kitty', 'Sanrio', 'white', 'black', 'red', 'pink', 'cyan']
+    },
+    {
+      url: '/images/horgahn.jpg',
+      title: 'Horgahn',
+      tags: ['PLA', 'blue-purple', 'purple-blue', 'star trek', 'model']
+    },
+    {
+      url: '/images/ipod-case.jpg',
+      title: 'iPod Case',
+      tags: ['PETG', 'clear', 'functional', 'case', 'translucent']
+    },
+    {
+      url: '/images/keychains.jpg',
+      title: 'Keychain Collection',
+      tags: ['PLA', 'multi-color', 'keychain', 'black', 'white', 'red', 'cyan']
+    },
+    {
+      url: '/images/lens-holder.jpg',
+      title: 'Lens Holder',
+      tags: ['PLA', 'natural', 'translucent', 'functional']
+    },
+    {
+      url: '/images/lens-organizer.jpg',
+      title: 'Lens Organizer',
+      tags: ['PLA', 'black', 'natural', 'functional', 'translucent']
+    },
+    {
+      url: '/images/marvel-keychains.jpg',
+      title: 'Marvel Keychains',
+      tags: ['PLA', 'multi-color', 'keychain', 'Marvel', 'captain america', 'groot', 'sanrio']
+    },
+    {
+      url: '/images/more-keychains.jpg',
+      title: 'More Keychains',
+      tags: ['PLA', 'multi-color', 'keychain', 'Marvel', 'captain america', 'groot', 'sanrio', 'deadpool', 'wolverine']
+    },
+    {
+      url: '/images/otter-keychain.jpg',
+      title: 'Otter Keychain',
+      tags: ['PLA', 'multi-color', 'keychain', 'white', 'black']
+    },
+    {
+      url: '/images/relief-sculpture.jpg',
+      title: 'Relief Sculpture',
+      tags: ['PLA', 'photo', 'ornament', 'light-grey']
+    },
+    {
+      url: '/images/snoopy.jpg',
+      title: 'Snoopy',
+      tags: ['PLA', 'multi-color', 'white', 'black', 'red', 'peanuts', 'mini']
+    },
+    {
+      url: '/images/trek-badges.jpg',
+      title: 'Star Trek Badges',
+      tags: ['PLA', 'multi-color', 'cosplay', 'gold', 'silver', 'black', 'star trek']
+    },
+    {
+      url: '/images/trek-models.jpg',
+      title: 'Star Trek Models',
+      tags: ['PLA', 'white', 'model', 'star trek']
     }
   ];
 
@@ -59,7 +179,8 @@ export class GalleryService {
     'keychain',
     'mini',
     'model',
-    'functional'
+    'functional',
+    'filament'
   ];
 
   getImages(): Promise<PrintImage[]> {

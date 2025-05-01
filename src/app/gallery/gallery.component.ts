@@ -30,6 +30,7 @@ export class GalleryComponent implements OnInit, OnDestroy {
   private currentHue: number = 180;
   public rotationX: number = 0;
   public rotationY: number = 0;
+  private cubeSpacing: any;
 
   constructor(
     private elementRef: ElementRef,
@@ -39,11 +40,11 @@ export class GalleryComponent implements OnInit, OnDestroy {
     this.isBrowser = isPlatformBrowser(platformId);
   }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     if (this.isBrowser) {
       this.initScene();
-      this.initPhysics();
-      this.updateFilteredCubes();
+      await this.initWalls();
+      await this.updateFilteredCubes();
       this.animate();
       this.startColorAnimation();
       this.initMouseTracking();
@@ -92,14 +93,14 @@ export class GalleryComponent implements OnInit, OnDestroy {
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    this.renderer.toneMappingExposure = 1.5;
+    this.renderer.toneMappingExposure = 2.0;
     this.elementRef.nativeElement.appendChild(this.renderer.domElement);
 
     // Add lights
-    const ambientLight = new THREE.AmbientLight(0xffffff, 1.0);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
     this.scene.add(ambientLight);
 
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 1.0);
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 1.2);
     directionalLight.position.set(1, 1, 1);
     this.scene.add(directionalLight);
 
@@ -111,73 +112,199 @@ export class GalleryComponent implements OnInit, OnDestroy {
     });
   }
 
-  private initPhysics(): void {
+  private async initWalls(): Promise<void> {
     if (!this.isBrowser) return;
 
-    this.world = new CANNON.World({
-      gravity: new CANNON.Vec3(0, -9.82, 0)
-    });
+    // Initialize physics world if not already done
+    if (!this.world) {
+      this.world = new CANNON.World({
+        gravity: new CANNON.Vec3(0, -9.82, 0)
+      });
+    }
 
-    // Create ground
-    const groundShape = new CANNON.Plane();
-    const groundBody = new CANNON.Body({
-      mass: 0,
-      shape: groundShape
-    });
-    groundBody.quaternion.setFromEuler(-Math.PI / 2, 0, 0);
-    this.world.addBody(groundBody);
+    // Define cube size constants
+    const cubeSize = 2;
+    const cubeGap = 1.0;
+    const totalCubeSize = cubeSize + cubeGap;
 
-    // Add ground mesh
-    const groundGeometry = new THREE.PlaneGeometry(20, 20);
-    const groundMaterial = new THREE.MeshStandardMaterial({ color: 0x333333 });
-    const groundMesh = new THREE.Mesh(groundGeometry, groundMaterial);
-    groundMesh.rotation.x = -Math.PI / 2;
-    this.scene.add(groundMesh);
+    // Calculate dimensions
+    const wallWidth = 16;
+    const wallDepth = 8;
+    const cubesPerRow = Math.floor(wallWidth / totalCubeSize);
+    const cubesPerColumn = Math.floor(wallDepth / totalCubeSize);
+    const cubesPerLayer = cubesPerRow * cubesPerColumn;
+    
+    const images = await this.galleryService.getImages();
+    const totalImages = images.length;
+    const layersNeeded = Math.ceil(totalImages / cubesPerLayer);
+    const wallHeight = Math.max(30, layersNeeded * totalCubeSize + 20);
 
-    // Add walls to constrain the cubes
+    this.cubeSpacing = {
+      wallWidth,
+      wallDepth,
+      wallHeight,
+      cubeSize,
+      cubeGap,
+      totalCubeSize,
+      cubesPerRow,
+      cubesPerColumn,
+      cubesPerLayer
+    };
+
     const wallThickness = 0.5;
-    const wallHeight = 10;
-    const wallWidth = 12; // Doubled from 6 to 12 units
-    const wallDepth = 3.375; // Keeping the same depth
+    const visualMaterial = new THREE.MeshStandardMaterial({
+      color: 0xffffff,
+      transparent: true,
+      opacity: 0.0,
+      side: THREE.DoubleSide
+    });
+
+    // Create physics materials
+    const wallPhysicsMaterial = new CANNON.Material({
+      friction: 0.1,
+      restitution: 0.2
+    });
+
+    const stepPhysicsMaterial = new CANNON.Material({
+      friction: 0.1,
+      restitution: 0.3
+    });
 
     // Create walls
-    const wallShapes = [
-      new CANNON.Box(new CANNON.Vec3(wallWidth, wallHeight, wallThickness)), // back
-      new CANNON.Box(new CANNON.Vec3(wallWidth, wallHeight, wallThickness)), // front
-      new CANNON.Box(new CANNON.Vec3(wallThickness, wallHeight, wallDepth)), // left
-      new CANNON.Box(new CANNON.Vec3(wallThickness, wallHeight, wallDepth))  // right
+    const walls = [
+      // Left wall
+      new THREE.Mesh(
+        new THREE.BoxGeometry(wallThickness, wallHeight, wallDepth + 2),
+        visualMaterial
+      ),
+      // Right wall
+      new THREE.Mesh(
+        new THREE.BoxGeometry(wallThickness, wallHeight, wallDepth + 2),
+        visualMaterial
+      ),
+      // Front wall
+      new THREE.Mesh(
+        new THREE.BoxGeometry(wallWidth, wallHeight, wallThickness),
+        visualMaterial
+      ),
+      // Back wall
+      new THREE.Mesh(
+        new THREE.BoxGeometry(wallWidth, wallHeight, wallThickness),
+        visualMaterial
+      ),
+      // Floor
+      new THREE.Mesh(
+        new THREE.BoxGeometry(wallWidth, wallThickness, wallDepth + 2),
+        visualMaterial
+      ),
+      // Roof
+      new THREE.Mesh(
+        new THREE.BoxGeometry(wallWidth, wallThickness, wallDepth + 2),
+        visualMaterial
+      )
     ];
 
-    const wallPositions = [
-      new CANNON.Vec3(0, wallHeight/2, -wallDepth), // back
-      new CANNON.Vec3(0, wallHeight/2, wallDepth),  // front
-      new CANNON.Vec3(-wallWidth, wallHeight/2, 0), // left
-      new CANNON.Vec3(wallWidth, wallHeight/2, 0)   // right
-    ];
+    // Position walls
+    walls[0].position.set(-wallWidth/2 - wallThickness/2, wallHeight/2, 0);
+    walls[1].position.set(wallWidth/2 + wallThickness/2, wallHeight/2, 0);
+    walls[2].position.set(0, wallHeight/2, -wallDepth/2 - 1 - wallThickness/2);
+    walls[3].position.set(0, wallHeight/2, wallDepth/2 + 1 + wallThickness/2);
+    walls[4].position.set(0, -wallThickness/2, 0);
+    walls[5].position.set(0, wallHeight + wallThickness/2, 0);
 
-    wallShapes.forEach((shape, index) => {
-      const wallBody = new CANNON.Body({
-        mass: 0,
-        shape: shape,
-        position: wallPositions[index]
-      });
-      this.world.addBody(wallBody);
+    walls.forEach(wall => this.scene.add(wall));
 
-      // Add wall mesh
-      const wallGeometry = new THREE.BoxGeometry(
-        shape.halfExtents.x * 2,
-        shape.halfExtents.y * 2,
-        shape.halfExtents.z * 2
-      );
-      const wallMaterial = new THREE.MeshStandardMaterial({ 
-        color: 0x333333,
-        transparent: true,
-        opacity: 0.5
-      });
-      const wallMesh = new THREE.Mesh(wallGeometry, wallMaterial);
-      wallMesh.position.copy(wallBody.position as any);
-      this.scene.add(wallMesh);
-    });
+    // Create physics bodies for walls
+    const wallShape = new CANNON.Box(new CANNON.Vec3(wallThickness/2, wallHeight/2, (wallDepth + 2)/2));
+    const wallBody = new CANNON.Body({ mass: 0, material: wallPhysicsMaterial });
+    wallBody.addShape(wallShape);
+    wallBody.position.set(-wallWidth/2 - wallThickness/2, wallHeight/2, 0);
+    this.world.addBody(wallBody);
+
+    const rightWallBody = new CANNON.Body({ mass: 0, material: wallPhysicsMaterial });
+    rightWallBody.addShape(wallShape);
+    rightWallBody.position.set(wallWidth/2 + wallThickness/2, wallHeight/2, 0);
+    this.world.addBody(rightWallBody);
+
+    const frontWallBody = new CANNON.Body({ mass: 0, material: wallPhysicsMaterial });
+    frontWallBody.addShape(new CANNON.Box(new CANNON.Vec3(wallWidth/2, wallHeight/2, wallThickness/2)));
+    frontWallBody.position.set(0, wallHeight/2, -wallDepth/2 - 1 - wallThickness/2);
+    this.world.addBody(frontWallBody);
+
+    const backWallBody = new CANNON.Body({ mass: 0, material: wallPhysicsMaterial });
+    backWallBody.addShape(new CANNON.Box(new CANNON.Vec3(wallWidth/2, wallHeight/2, wallThickness/2)));
+    backWallBody.position.set(0, wallHeight/2, wallDepth/2 + 1 + wallThickness/2);
+    this.world.addBody(backWallBody);
+
+    const floorBody = new CANNON.Body({ mass: 0, material: wallPhysicsMaterial });
+    floorBody.addShape(new CANNON.Box(new CANNON.Vec3(wallWidth/2, wallThickness/2, (wallDepth + 2)/2)));
+    floorBody.position.set(0, -wallThickness/2, 0);
+    this.world.addBody(floorBody);
+
+    const roofBody = new CANNON.Body({ mass: 0, material: wallPhysicsMaterial });
+    roofBody.addShape(new CANNON.Box(new CANNON.Vec3(wallWidth/2, wallThickness/2, (wallDepth + 2)/2)));
+    roofBody.position.set(0, wallHeight + wallThickness/2, 0);
+    this.world.addBody(roofBody);
+
+    // Create staircase
+    const stepWidth = cubeSize;
+    const stepHeight = cubeSize;
+    const stepDepth = wallDepth;
+
+    // First step (higher step at back wall)
+    const firstStepMesh = new THREE.Mesh(
+      new THREE.BoxGeometry(wallWidth, stepHeight * 2, stepWidth),
+      visualMaterial
+    );
+    firstStepMesh.position.set(0, stepHeight, -wallDepth/2 + stepWidth/2);
+    this.scene.add(firstStepMesh);
+
+    const firstStepBody = new CANNON.Body({ mass: 0, material: stepPhysicsMaterial });
+    firstStepBody.addShape(new CANNON.Box(new CANNON.Vec3(wallWidth/2, stepHeight, stepWidth/2)));
+    firstStepBody.position.set(0, stepHeight, -wallDepth/2 + stepWidth/2);
+    this.world.addBody(firstStepBody);
+
+    // Second step (lower step in front of first step)
+    const secondStepMesh = new THREE.Mesh(
+      new THREE.BoxGeometry(wallWidth, stepHeight, stepWidth),
+      visualMaterial
+    );
+    secondStepMesh.position.set(0, stepHeight/2, -wallDepth/2 + stepWidth * 1.5);
+    this.scene.add(secondStepMesh);
+
+    const secondStepBody = new CANNON.Body({ mass: 0, material: stepPhysicsMaterial });
+    secondStepBody.addShape(new CANNON.Box(new CANNON.Vec3(wallWidth/2, stepHeight/2, stepWidth/2)));
+    secondStepBody.position.set(0, stepHeight/2, -wallDepth/2 + stepWidth * 1.5);
+    this.world.addBody(secondStepBody);
+
+    // Add walls to seal the steps
+    const stepWallThickness = wallThickness;
+    
+    // Front wall of first step
+    const firstStepFrontWallMesh = new THREE.Mesh(
+      new THREE.BoxGeometry(wallWidth, stepHeight * 2, stepWallThickness),
+      visualMaterial
+    );
+    firstStepFrontWallMesh.position.set(0, stepHeight, -wallDepth/2 + stepWidth);
+    this.scene.add(firstStepFrontWallMesh);
+
+    const firstStepFrontWallBody = new CANNON.Body({ mass: 0, material: stepPhysicsMaterial });
+    firstStepFrontWallBody.addShape(new CANNON.Box(new CANNON.Vec3(wallWidth/2, stepHeight, stepWallThickness/2)));
+    firstStepFrontWallBody.position.set(0, stepHeight, -wallDepth/2 + stepWidth);
+    this.world.addBody(firstStepFrontWallBody);
+
+    // Front wall of second step
+    const secondStepFrontWallMesh = new THREE.Mesh(
+      new THREE.BoxGeometry(wallWidth, stepHeight, stepWallThickness),
+      visualMaterial
+    );
+    secondStepFrontWallMesh.position.set(0, stepHeight/2, -wallDepth/2 + stepWidth * 2);
+    this.scene.add(secondStepFrontWallMesh);
+
+    const secondStepFrontWallBody = new CANNON.Body({ mass: 0, material: stepPhysicsMaterial });
+    secondStepFrontWallBody.addShape(new CANNON.Box(new CANNON.Vec3(wallWidth/2, stepHeight/2, stepWallThickness/2)));
+    secondStepFrontWallBody.position.set(0, stepHeight/2, -wallDepth/2 + stepWidth * 2);
+    this.world.addBody(secondStepFrontWallBody);
   }
 
   public onTagSelect(tag: string): void {
@@ -193,6 +320,10 @@ export class GalleryComponent implements OnInit, OnDestroy {
   }
 
   private async updateFilteredCubes(): Promise<void> {
+    if (!this.cubeSpacing) {
+      await this.initWalls();
+    }
+
     const currentImages = this.cubes.map(cube => cube.image);
     const filteredImages = this.isFiltering 
       ? await this.galleryService.getImagesByTag(this.selectedTag)
@@ -217,109 +348,101 @@ export class GalleryComponent implements OnInit, OnDestroy {
       !currentImages.some(current => current.url === img.url)
     );
 
-    if (imagesToAdd.length > 0) {
-      this.createCubes(imagesToAdd);
+    // Create cubes asynchronously as images load
+    for (const image of imagesToAdd) {
+      await this.createCube(image);
     }
   }
 
-  private createCubes(images: PrintImage[]): void {
+  private async createCube(image: PrintImage): Promise<void> {
     if (!this.isBrowser) return;
 
-    images.forEach((image: PrintImage, index: number) => {
-      const texture = new THREE.TextureLoader().load(image.url);
-      texture.colorSpace = THREE.SRGBColorSpace;
-      
-      const materials = [
-        new THREE.MeshStandardMaterial({ 
-          map: texture,
-          toneMapped: true,
-          roughness: 0.0,
-          metalness: 0.0,
-          emissive: 0x000000,
-          emissiveIntensity: 0.0
-        }), // right
-        new THREE.MeshStandardMaterial({ 
-          map: texture,
-          toneMapped: true,
-          roughness: 0.0,
-          metalness: 0.0,
-          emissive: 0x000000,
-          emissiveIntensity: 0.0
-        }), // left
-        new THREE.MeshStandardMaterial({ 
-          map: texture,
-          toneMapped: true,
-          roughness: 0.0,
-          metalness: 0.0,
-          emissive: 0x000000,
-          emissiveIntensity: 0.0
-        }), // top
-        new THREE.MeshStandardMaterial({ 
-          map: texture,
-          toneMapped: true,
-          roughness: 0.0,
-          metalness: 0.0,
-          emissive: 0x000000,
-          emissiveIntensity: 0.0
-        }), // bottom
-        new THREE.MeshStandardMaterial({ 
-          map: texture,
-          toneMapped: true,
-          roughness: 0.0,
-          metalness: 0.0,
-          emissive: 0x000000,
-          emissiveIntensity: 0.0
-        }), // front
-        new THREE.MeshStandardMaterial({ 
-          map: texture,
-          toneMapped: true,
-          roughness: 0.0,
-          metalness: 0.0,
-          emissive: 0x000000,
-          emissiveIntensity: 0.0
-        }), // back
-      ];
+    const {
+      wallWidth,
+      wallDepth,
+      wallHeight,
+      totalCubeSize,
+      cubesPerColumn,
+      cubesPerLayer
+    } = this.cubeSpacing;
 
-      const geometry = new THREE.BoxGeometry(2, 2, 2);
-      const mesh = new THREE.Mesh(geometry, materials);
-      
-      // Position new cubes higher up within the wall boundaries
-      const wallWidth = 12;
-      const wallDepth = 3.375;
-      const cubeSize = 2; // Half of the cube size (1 unit) plus a small buffer
-      const buffer = 0.5; // Small buffer to prevent cubes from touching walls
-      
-      mesh.position.set(
-        (Math.random() - 0.5) * (wallWidth - cubeSize - buffer), // Random x position within walls
-        30 + index * 0.5, // Stagger the height slightly
-        (Math.random() - 0.5) * (wallDepth - cubeSize - buffer) // Random z position within walls
-      );
-
-      // Create physics body
-      const shape = new CANNON.Box(new CANNON.Vec3(1, 1, 1));
-      const body = new CANNON.Body({
-        mass: 1,
-        shape: shape,
-        position: new CANNON.Vec3(mesh.position.x, mesh.position.y, mesh.position.z)
+    const texture = await new Promise<THREE.Texture>((resolve) => {
+      new THREE.TextureLoader().load(image.url, (texture) => {
+        texture.colorSpace = THREE.SRGBColorSpace;
+        resolve(texture);
       });
-
-      // Add random initial velocity with strong downward component
-      body.velocity.set(
-        (Math.random() - 0.5) * 3, // x
-        -(10 + Math.random() * 10), // y (downward between 10 and 20)
-        (Math.random() - 0.5) * 3  // z
-      );
-      
-      body.angularVelocity.set(
-        (Math.random() - 0.5) * 2, // x
-        (Math.random() - 0.5) * 2, // y
-        (Math.random() - 0.5) * 2  // z
-      );
-
-      this.world.addBody(body);
-      this.scene.add(mesh);
-      this.cubes.push({ mesh, body, image });
     });
+      
+    const materials = Array(6).fill(new THREE.MeshStandardMaterial({ 
+      map: texture,
+      toneMapped: true,
+      roughness: 0.0,
+      metalness: 0.0,
+      emissive: 0x000000,
+      emissiveIntensity: 0.0,
+      color: 0xffffff
+    }));
+
+    const geometry = new THREE.BoxGeometry(2, 2, 2);
+    const mesh = new THREE.Mesh(geometry, materials);
+    
+    const index = this.cubes.length;
+    const layerIndex = Math.floor(index / cubesPerLayer);
+    const positionInLayer = index % cubesPerLayer;
+    const row = Math.floor(positionInLayer / cubesPerColumn);
+    const column = positionInLayer % cubesPerColumn;
+    
+    const startX = -wallWidth/2 + totalCubeSize/2;
+    const startZ = -wallDepth/2 + totalCubeSize/2;
+    
+    // Increase spawn height by 10 units
+    const spawnHeight = wallHeight - 10;
+    const position = new THREE.Vector3(
+      startX + (row * totalCubeSize),
+      spawnHeight - (layerIndex * totalCubeSize) - totalCubeSize/2,
+      startZ + (column * totalCubeSize)
+    );
+    
+    mesh.position.copy(position);
+
+    // Add random initial rotation
+    mesh.rotation.set(
+      Math.random() * Math.PI * 2,
+      Math.random() * Math.PI * 2,
+      Math.random() * Math.PI * 2
+    );
+
+    const shape = new CANNON.Box(new CANNON.Vec3(1, 1, 1));
+    const body = new CANNON.Body({
+      mass: 1,
+      shape: shape,
+      position: new CANNON.Vec3(position.x, position.y, position.z)
+    });
+
+    // Set initial quaternion to match mesh rotation
+    body.quaternion.setFromEuler(
+      mesh.rotation.x,
+      mesh.rotation.y,
+      mesh.rotation.z
+    );
+
+    // Increase initial downward velocity to make cubes fall faster
+    body.velocity.set(
+      (Math.random() - 0.5) * 2, // Increased from 0.5 to 2 for more horizontal movement
+      -(5 + Math.random() * 3),
+      (Math.random() - 0.5) * 2 // Increased from 0.5 to 2 for more horizontal movement
+    );
+    
+    // Increase angular velocity for more rotation
+    body.angularVelocity.set(
+      (Math.random() - 0.5) * 2, // Increased from 0.5 to 2
+      (Math.random() - 0.5) * 2, // Increased from 0.5 to 2
+      (Math.random() - 0.5) * 2  // Increased from 0.5 to 2
+    );
+
+    this.world.addBody(body);
+    this.scene.add(mesh);
+    this.cubes.push({ mesh, body, image });
   }
 
   private animate(): void {
