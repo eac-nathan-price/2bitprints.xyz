@@ -615,4 +615,71 @@ export class GalleryComponent implements OnInit, OnDestroy {
   public closeImage(): void {
     this.selectedImage = null;
   }
+
+  public respawnCubes(event?: MouseEvent): void {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    if (!this.isBrowser || !this.cubes.length) return;
+
+    // Get current cube positions and shuffle them
+    const currentCubes = [...this.cubes];
+    const shuffledCubes = currentCubes.sort(() => Math.random() - 0.5);
+    
+    // Calculate spawn height
+    const spawnHeight = this.cubeSpacing.wallHeight - 10;
+    
+    // Respawn each cube with a delay
+    shuffledCubes.forEach((cube, index) => {
+      setTimeout(() => {
+        // Remove from scene and world
+        this.scene.remove(cube.mesh);
+        this.world.removeBody(cube.body);
+        
+        // Create new cube at random position
+        const startX = -this.cubeSpacing.wallWidth/2 + this.cubeSpacing.totalCubeSize/2;
+        const startZ = -this.cubeSpacing.wallDepth/2 + this.cubeSpacing.totalCubeSize/2;
+        
+        const position = new THREE.Vector3(
+          startX + (Math.random() * (this.cubeSpacing.wallWidth - this.cubeSpacing.totalCubeSize)),
+          spawnHeight,
+          startZ + (Math.random() * (this.cubeSpacing.wallDepth - this.cubeSpacing.totalCubeSize))
+        );
+        
+        cube.mesh.position.copy(position);
+        cube.body.position.copy(position as any);
+        
+        // Add random initial rotation
+        cube.mesh.rotation.set(
+          Math.random() * Math.PI * 2,
+          Math.random() * Math.PI * 2,
+          Math.random() * Math.PI * 2
+        );
+        cube.body.quaternion.setFromEuler(
+          cube.mesh.rotation.x,
+          cube.mesh.rotation.y,
+          cube.mesh.rotation.z
+        );
+        
+        // Add initial velocity
+        cube.body.velocity.set(
+          (Math.random() - 0.5) * 2,
+          -(5 + Math.random() * 3),
+          (Math.random() - 0.5) * 2
+        );
+        
+        // Add random angular velocity
+        cube.body.angularVelocity.set(
+          (Math.random() - 0.5) * 2,
+          (Math.random() - 0.5) * 2,
+          (Math.random() - 0.5) * 2
+        );
+        
+        // Add back to scene and world
+        this.scene.add(cube.mesh);
+        this.world.addBody(cube.body);
+      }, (index * 2000) / shuffledCubes.length); // Stagger over 2 seconds
+    });
+  }
 }

@@ -32,8 +32,16 @@
   text-shadow: 2px 2px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000;
   margin: 0 0 15px 0;
   letter-spacing: 2px;
-  transition: color 1s ease;
+  transition: all 0.3s ease;
   transform: translateZ(20px);
+  transform-origin: left center;
+  display: inline-block;
+  cursor: pointer;
+  user-select: none;
+
+  &:hover {
+    transform: translateZ(20px) scale(1.05);
+  }
 }
 
 .tag-list {

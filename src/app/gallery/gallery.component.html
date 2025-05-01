@@ -1,7 +1,7 @@
 <div class="gallery-container">
   <div class="controls-container" [style.transform]="'perspective(1000px) rotateX(' + rotationX + 'deg) rotateY(' + rotationY + 'deg)'">
     <div class="tag-controls">
-      <h1 class="retro-title" [style.color]="titleColor">2BitPrints</h1>
+      <h1 class="retro-title" [style.color]="titleColor" (click)="respawnCubes($event)">2BitPrints</h1>
       <div class="tag-list">
         <button 
           *ngFor="let tag of filterTags" 
@@ -23,7 +23,7 @@
 
   <div class="image-overlay" *ngIf="selectedImage" (click)="closeImage()">
     <div class="overlay-content" (click)="$event.stopPropagation()">
-      <button class="close-button" (click)="closeImage()">×</button>
+      <button class="close-button" (click)="closeImage(); $event.stopPropagation()">×</button>
       <img [src]="selectedImage.url" [alt]="selectedImage.title">
       <div class="image-title">{{selectedImage.title}}</div>
     </div>
