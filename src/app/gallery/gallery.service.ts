@@ -97,7 +97,7 @@ export class GalleryService {
     },
     {
       url: '/images/hauntedmansion-busts.jpg',
-      title: 'Haunted Mansion Busts',
+      title: 'Haunted Mansion Inverted Busts',
       tags: ['PLA', 'multi-color', 'model', 'white', 'black', 'disney', 'disneyland']
     },
     {
