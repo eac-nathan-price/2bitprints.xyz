@@ -169,7 +169,19 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 100;
+  z-index: 9999;
+}
+
+// Add invisible overlay to block cursor events
+.image-overlay::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  pointer-events: none;
 }
 
 .overlay-content {
@@ -179,6 +191,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  pointer-events: auto;
   
   img {
     max-width: 100%;

@@ -28,6 +28,8 @@ export class GalleryComponent implements OnInit, OnDestroy {
   private mouse: THREE.Vector2 = new THREE.Vector2();
   public selectedImage: PrintImage | null = null;
   public isLoading: boolean = true;
+  private lastCloseTime: number = 0;
+  private readonly CLICK_COOLDOWN = 100; // milliseconds
   
   public filterTags: string[] = [];
   public selectedTag: string = '';
@@ -792,7 +794,11 @@ export class GalleryComponent implements OnInit, OnDestroy {
   }
 
   private handleClick(event: MouseEvent): void {
-    if (!this.isBrowser) return;
+    if (!this.isBrowser || this.selectedImage) return;
+
+    // Check if we're in the cooldown period
+    const now = performance.now();
+    if (now - this.lastCloseTime < this.CLICK_COOLDOWN) return;
 
     // Calculate mouse position in normalized device coordinates
     this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
@@ -817,6 +823,7 @@ export class GalleryComponent implements OnInit, OnDestroy {
 
   public closeImage(): void {
     this.selectedImage = null;
+    this.lastCloseTime = performance.now();
   }
 
   public respawnCubes(event?: MouseEvent): void {
