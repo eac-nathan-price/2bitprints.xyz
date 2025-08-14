@@ -38,12 +38,13 @@ $bitprints-xyz-theme: mat.define-theme(
 // @include mat.color-variants-backwards-compatibility($bitprints-xyz-theme);
 /* You can add global styles to this file, and also import other style files */
 
-// Star Trek Fonts
+// Star Trek Fonts with Enhanced Loading
 @font-face {
   font-family: 'Montalban';
   src: url('/fonts/Montalban.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
@@ -51,6 +52,7 @@ $bitprints-xyz-theme: mat.define-theme(
   src: url('/fonts/FINALOLD.TTF') format('truetype');
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
@@ -58,6 +60,7 @@ $bitprints-xyz-theme: mat.define-theme(
   src: url('/fonts/Fabrini.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
@@ -65,6 +68,7 @@ $bitprints-xyz-theme: mat.define-theme(
   src: url('/fonts/Jefferies.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
@@ -72,6 +76,7 @@ $bitprints-xyz-theme: mat.define-theme(
   src: url('/fonts/Trill.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
@@ -79,6 +84,7 @@ $bitprints-xyz-theme: mat.define-theme(
   src: url('/fonts/Dominion.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
@@ -86,6 +92,7 @@ $bitprints-xyz-theme: mat.define-theme(
   src: url('/fonts/Vulcan.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
@@ -93,6 +100,7 @@ $bitprints-xyz-theme: mat.define-theme(
   src: url('/fonts/Trek_TNG_Monitors.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
@@ -100,6 +108,7 @@ $bitprints-xyz-theme: mat.define-theme(
   src: url('/fonts/Ferengi.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
@@ -107,6 +116,7 @@ $bitprints-xyz-theme: mat.define-theme(
   src: url('/fonts/Cardassian.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
@@ -114,6 +124,7 @@ $bitprints-xyz-theme: mat.define-theme(
   src: url('/fonts/Bajoran.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
@@ -121,6 +132,7 @@ $bitprints-xyz-theme: mat.define-theme(
   src: url('/fonts/Trekbats.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
@@ -128,6 +140,7 @@ $bitprints-xyz-theme: mat.define-theme(
   src: url('/fonts/DS9_Credits.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
@@ -135,6 +148,7 @@ $bitprints-xyz-theme: mat.define-theme(
   src: url('/fonts/Federation_Wide.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
@@ -142,6 +156,7 @@ $bitprints-xyz-theme: mat.define-theme(
   src: url('/fonts/DS9_Title.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
@@ -149,6 +164,7 @@ $bitprints-xyz-theme: mat.define-theme(
   src: url('/fonts/Federation.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
@@ -156,6 +172,7 @@ $bitprints-xyz-theme: mat.define-theme(
   src: url('/fonts/Romulan.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
@@ -163,6 +180,7 @@ $bitprints-xyz-theme: mat.define-theme(
   src: url('/fonts/Starfleet_2.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
@@ -170,6 +188,7 @@ $bitprints-xyz-theme: mat.define-theme(
   src: url('/fonts/Klingon.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
@@ -177,6 +196,7 @@ $bitprints-xyz-theme: mat.define-theme(
   src: url('/fonts/Trek_Movie_2.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
@@ -184,6 +204,7 @@ $bitprints-xyz-theme: mat.define-theme(
   src: url('/fonts/TNG_Title.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
@@ -191,6 +212,7 @@ $bitprints-xyz-theme: mat.define-theme(
   src: url('/fonts/TOS_Title.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
@@ -198,6 +220,7 @@ $bitprints-xyz-theme: mat.define-theme(
   src: url('/fonts/Tholian.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
@@ -205,6 +228,7 @@ $bitprints-xyz-theme: mat.define-theme(
   src: url('/fonts/Starfleet_1.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
@@ -212,6 +236,7 @@ $bitprints-xyz-theme: mat.define-theme(
   src: url('/fonts/Trek_Movie_1.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
@@ -219,6 +244,7 @@ $bitprints-xyz-theme: mat.define-theme(
   src: url('/fonts/Final_Frontier.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
@@ -226,6 +252,7 @@ $bitprints-xyz-theme: mat.define-theme(
   src: url('/fonts/TNG_Credits.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
@@ -233,6 +260,7 @@ $bitprints-xyz-theme: mat.define-theme(
   src: url('/fonts/Context_Ultra_Condensed_Bold.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
@@ -240,6 +268,7 @@ $bitprints-xyz-theme: mat.define-theme(
   src: url('/fonts/Context_Ultra_Condensed.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
@@ -247,6 +276,7 @@ $bitprints-xyz-theme: mat.define-theme(
   src: url('/fonts/Beijing.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
@@ -254,6 +284,7 @@ $bitprints-xyz-theme: mat.define-theme(
   src: url('/fonts/Nova_Light_Ultra.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
@@ -261,6 +292,7 @@ $bitprints-xyz-theme: mat.define-theme(
   src: url('/fonts/Nova_Light_Ultra_Thin.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 
 html,

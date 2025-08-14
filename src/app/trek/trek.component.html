@@ -8,46 +8,61 @@
     <div class="input-section">
       <div class="input-group">
         <label for="userName" class="lcars-label">Enter Your Name:</label>
-        <input
-          type="text"
-          id="userName"
-          name="userName"
-          [(ngModel)]="userName"
+        <input 
+          type="text" 
+          id="userName" 
+          name="userName" 
+          [(ngModel)]="userName" 
           class="lcars-input"
           placeholder="Type your name here..."
-        />
+        >
       </div>
 
       <div class="input-group">
         <label for="fontSelect" class="lcars-label">Select Font:</label>
-        <select id="fontSelect" name="fontSelect" [(ngModel)]="selectedFont" class="lcars-select">
+        <select 
+          id="fontSelect" 
+          name="fontSelect" 
+          [(ngModel)]="selectedFont" 
+          class="lcars-select"
+        >
           <optgroup *ngFor="let group of groupedFonts" [label]="group.category">
             <option *ngFor="let font of group.fonts" [value]="font.value">
               {{ font.displayName }}
+              <span *ngIf="getFontStatus(font.name)?.loaded">✓</span>
+              <span *ngIf="!getFontStatus(font.name)?.loaded">✗</span>
             </option>
           </optgroup>
         </select>
+        <small class="font-status-info">
+          {{ getLoadedFontsCount() }} of {{ getTotalFontsCount() }} fonts loaded successfully
+        </small>
       </div>
     </div>
 
     <div class="preview-section">
       <h3 class="lcars-subtitle">Preview:</h3>
-      <div class="preview-box" [ngStyle]="getPreviewStyle()">
+      <div class="preview-box" [ngStyle]="getPreviewStyle()" [attr.data-font-name]="selectedFont">
         <span *ngIf="userName; else placeholderText">{{ userName }}</span>
         <ng-template #placeholderText>
-          <span style="color: #666; font-style: italic">Your name will appear here</span>
+          <span style="color: #666; font-style: italic;">Your name will appear here</span>
         </ng-template>
+      </div>
+      <div class="font-debug" *ngIf="getFontStatus(selectedFont)">
+        <div class="font-status" [class]="getFontStatus(selectedFont)?.loaded ? 'loaded' : 'failed'">
+          <strong>Font Status:</strong> 
+          <span *ngIf="getFontStatus(selectedFont)?.loaded">✓ {{ selectedFont }} loaded successfully</span>
+          <span *ngIf="!getFontStatus(selectedFont)?.loaded">✗ {{ selectedFont }} failed to load</span>
+        </div>
+        <div *ngIf="getFontStatus(selectedFont)?.error" class="font-error">
+          <strong>Error:</strong> {{ getFontStatus(selectedFont)?.error }}
+        </div>
       </div>
     </div>
 
     <div class="info-section">
       <h3 class="lcars-subtitle">About LCARS:</h3>
-      <p>
-        LCARS (Library Computer Access/Retrieval System) is the computer system interface used
-        throughout Starfleet in the 24th century. This interface recreates the distinctive orange
-        and blue color scheme and typography used in Star Trek: The Next Generation and subsequent
-        series.
-      </p>
+      <p>LCARS (Library Computer Access/Retrieval System) is the computer system interface used throughout Starfleet in the 24th century. This interface recreates the distinctive orange and blue color scheme and typography used in Star Trek: The Next Generation and subsequent series.</p>
       <p><strong>Font Categories:</strong></p>
       <ul class="font-categories">
         <li><strong>Federation:</strong> Official Starfleet and Federation fonts</li>
@@ -59,6 +74,16 @@
         <li><strong>Technical:</strong> Engineering and technical display fonts</li>
         <li><strong>Additional:</strong> Other Star Trek themed fonts</li>
       </ul>
+      
+      <div class="font-troubleshooting">
+        <h4>Troubleshooting Font Issues:</h4>
+        <ul>
+          <li><strong>Font not loading?</strong> Check browser console for errors</li>
+          <li><strong>Fallback to default font?</strong> Font file may be corrupted or incompatible</li>
+          <li><strong>Some fonts work, others don't?</strong> TTF format compatibility varies by browser</li>
+          <li><strong>Try refreshing the page</strong> to reload all fonts</li>
+        </ul>
+      </div>
     </div>
   </div>
 </div>
