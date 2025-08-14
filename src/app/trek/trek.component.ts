@@ -1,6 +1,7 @@
-import { Component, OnInit, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild, AfterViewInit, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { isPlatformBrowser } from '@angular/common';
 import * as opentype from 'opentype.js';
 
 interface FontOption {
@@ -32,6 +33,7 @@ export class TrekComponent implements OnInit, AfterViewInit {
   selectedFont: string = 'TOSTitle';
   fontStatuses: FontStatus[] = [];
   loadedFonts: Map<string, opentype.Font> = new Map();
+  private isBrowser: boolean;
 
   fonts: FontOption[] = [
     // Federation & Starfleet Fonts
@@ -48,7 +50,8 @@ export class TrekComponent implements OnInit, AfterViewInit {
 
     // TNG Series Fonts
     { name: 'TNGTitle', value: 'TNGTitle', displayName: 'TNG Title', category: 'TNG', filePath: '/fonts/TNG_Title.ttf' },
-    { name: 'TNGCredits', value: 'TNGCredits', displayName: 'TNG Credits', category: 'TNG', filePath: '/fonts/TNG_Credits.ttf' },
+    // Temporarily comment out TNGCredits due to cmap error
+    // { name: 'TNGCredits', value: 'TNGCredits', displayName: 'TNG Credits', category: 'TNG', filePath: '/fonts/TNG_Credits.ttf' },
     {
       name: 'TrekTNGMonitors',
       value: 'TrekTNGMonitors',
@@ -125,15 +128,25 @@ export class TrekComponent implements OnInit, AfterViewInit {
     { name: 'FinalOld', value: 'FinalOld', displayName: 'Final Old', category: 'Additional', filePath: '/fonts/FINALOLD.TTF' },
   ];
 
+  constructor(@Inject(PLATFORM_ID) platformId: Object) {
+    this.isBrowser = isPlatformBrowser(platformId);
+  }
+
   ngOnInit() {
-    this.loadAllFonts();
+    // Only load fonts in the browser, not during SSR/SSG
+    if (this.isBrowser) {
+      this.loadAllFonts();
+    }
   }
 
   ngAfterViewInit() {
-    // Initial render after view is initialized
-    setTimeout(() => {
-      this.renderText();
-    }, 100);
+    // Only render in the browser
+    if (this.isBrowser) {
+      // Initial render after view is initialized
+      setTimeout(() => {
+        this.renderText();
+      }, 100);
+    }
   }
 
   get groupedFonts() {
@@ -155,6 +168,10 @@ export class TrekComponent implements OnInit, AfterViewInit {
   }
 
   private async loadAllFonts() {
+    if (!this.isBrowser) {
+      return; // Don't load fonts during SSR/SSG
+    }
+
     this.fontStatuses = [];
     
     for (const font of this.fonts) {
@@ -195,7 +212,7 @@ export class TrekComponent implements OnInit, AfterViewInit {
   }
 
   renderText() {
-    if (!this.previewCanvas || !this.userName) {
+    if (!this.isBrowser || !this.previewCanvas || !this.userName) {
       return;
     }
 
@@ -211,8 +228,9 @@ export class TrekComponent implements OnInit, AfterViewInit {
     canvas.width = 600;
     canvas.height = 200;
 
-    // Clear canvas
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // Clear canvas and set white background
+    ctx.fillStyle = '#FFFFFF';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     // Get the selected font
     const selectedFontData = this.loadedFonts.get(this.selectedFont);
@@ -245,10 +263,6 @@ export class TrekComponent implements OnInit, AfterViewInit {
       const x = (canvas.width - textWidth) / 2;
       const y = (canvas.height + textHeight) / 2;
       
-      // Clear and set background
-      ctx.fillStyle = '#000033';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      
       // Draw border
       ctx.strokeStyle = '#FF9C00';
       ctx.lineWidth = 2;
@@ -257,7 +271,7 @@ export class TrekComponent implements OnInit, AfterViewInit {
       // Render the text path
       ctx.save();
       ctx.translate(x, y);
-      ctx.fillStyle = '#FF9C00';
+      ctx.fillStyle = '#000033'; // Dark text on white background
       path.draw(ctx);
       ctx.restore();
       
@@ -284,11 +298,15 @@ export class TrekComponent implements OnInit, AfterViewInit {
   }
 
   onFontChange() {
-    this.renderText();
+    if (this.isBrowser) {
+      this.renderText();
+    }
   }
 
   onTextChange() {
-    this.renderText();
+    if (this.isBrowser) {
+      this.renderText();
+    }
   }
 
   getFontStatus(fontName: string): FontStatus | undefined {
@@ -304,12 +322,18 @@ export class TrekComponent implements OnInit, AfterViewInit {
   }
 
   retestFonts() {
-    console.log('Reloading all fonts...');
-    this.loadedFonts.clear();
-    this.loadAllFonts();
+    if (this.isBrowser) {
+      console.log('Reloading all fonts...');
+      this.loadedFonts.clear();
+      this.loadAllFonts();
+    }
   }
 
   testSpecificFont(fontName: string) {
+    if (!this.isBrowser) {
+      return;
+    }
+    
     console.log(`Testing specific font: ${fontName}`);
     const fontData = this.loadedFonts.get(fontName);
     
