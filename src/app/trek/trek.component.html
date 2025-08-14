@@ -296,6 +296,13 @@
           <span style="color: #666; font-style: italic">Your name will appear here</span>
         </ng-template>
       </div>
+      
+      <!-- Manual Font Test Button -->
+      <div class="font-test-controls">
+        <button class="lcars-btn" (click)="retestFonts()">Retest All Fonts</button>
+        <button class="lcars-btn" (click)="testSpecificFont(selectedFont)">Test Current Font</button>
+      </div>
+      
       <div class="font-debug" *ngIf="getFontStatus(selectedFont)">
         <div
           class="font-status"
@@ -311,6 +318,19 @@
         </div>
         <div *ngIf="getFontStatus(selectedFont)?.error" class="font-error">
           <strong>Error:</strong> {{ getFontStatus(selectedFont)?.error }}
+        </div>
+      </div>
+      
+      <!-- Font Loading Summary -->
+      <div class="font-summary">
+        <h4>Font Loading Summary:</h4>
+        <div class="font-list">
+          <div *ngFor="let status of fontStatuses" 
+               class="font-item" 
+               [class]="status.loaded ? 'loaded' : 'failed'">
+            <span class="font-name">{{ status.name }}</span>
+            <span class="font-status-indicator">{{ status.loaded ? '✓' : '✗' }}</span>
+          </div>
         </div>
       </div>
     </div>
