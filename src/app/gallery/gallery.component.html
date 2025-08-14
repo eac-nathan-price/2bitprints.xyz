@@ -3,41 +3,52 @@
 </div>
 
 <div class="gallery-container">
-  <div class="controls-container" [style.transform]="'perspective(1000px) rotateX(' + rotationX + 'deg) rotateY(' + rotationY + 'deg)'">
+  <div
+    class="controls-container"
+    [style.transform]="
+      'perspective(1000px) rotateX(' + rotationX + 'deg) rotateY(' + rotationY + 'deg)'
+    "
+  >
     <div class="tag-controls">
       <div class="title-row">
-        <h1 class="retro-title" [style.color]="titleColor" (click)="respawnCubes($event)">2BitPrints</h1>
+        <h1 class="retro-title" [style.color]="titleColor" (click)="respawnCubes($event)">
+          2BitPrints
+        </h1>
         <div class="nav-links">
-          <a 
-            class="nav-link" 
+          <a
+            class="nav-link"
             [style.color]="titleColor"
             routerLink="/trek"
-            title="LCARS Name Renderer">
+            title="LCARS Name Renderer"
+          >
             [trek]
           </a>
-          <a 
-            class="contact-text" 
+          <a
+            class="contact-text"
             [style.color]="titleColor"
             href="mailto:2bitprints@gmail.com?subject=Request for 3d print quote&body=Details:%0AMaterial:%0AColors:%0AZip Code:%0A"
             target="_blank"
-            (click)="$event.stopPropagation()">
+            (click)="$event.stopPropagation()"
+          >
             [contact]
           </a>
         </div>
       </div>
       <div class="tag-list">
-        <button 
-          *ngFor="let tag of filterTags" 
-          class="tag-button" 
+        <button
+          *ngFor="let tag of filterTags"
+          class="tag-button"
           [class.active]="selectedTag === tag"
-          (click)="onTagSelect(tag)">
+          (click)="onTagSelect(tag)"
+        >
           {{ tag }}
         </button>
-        <button 
-          class="clear-button" 
-          *ngIf="isFiltering" 
+        <button
+          class="clear-button"
+          *ngIf="isFiltering"
           (click)="clearFilter()"
-          title="Clear Filter">
+          title="Clear Filter"
+        >
           ×
         </button>
       </div>
@@ -47,8 +58,8 @@
   <div class="image-overlay" *ngIf="selectedImage" (click)="closeImage()">
     <div class="overlay-content">
       <button class="close-button">×</button>
-      <img [src]="selectedImage.url" [alt]="selectedImage.title">
-      <div class="image-title">{{selectedImage.title}}</div>
+      <img [src]="selectedImage.url" [alt]="selectedImage.title" />
+      <div class="image-title">{{ selectedImage.title }}</div>
     </div>
   </div>
 </div>

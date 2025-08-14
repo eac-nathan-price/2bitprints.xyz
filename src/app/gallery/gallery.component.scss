@@ -61,10 +61,14 @@
   cursor: pointer;
   transition: all 0.3s ease;
   text-decoration: none;
-  text-shadow: 2px 2px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000;
+  text-shadow:
+    2px 2px 0 #000,
+    -2px -2px 0 #000,
+    2px -2px 0 #000,
+    -2px 2px 0 #000;
   line-height: 1.2;
   white-space: nowrap;
-  
+
   &:hover {
     transform: scale(1.25);
   }
@@ -86,8 +90,12 @@
   display: inline-block;
   transition: all 0.3s ease;
   transform-origin: left center;
-  text-shadow: 2px 2px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000;
-  
+  text-shadow:
+    2px 2px 0 #000,
+    -2px -2px 0 #000,
+    2px -2px 0 #000,
+    -2px 2px 0 #000;
+
   &:hover {
     transform: scale(1.05);
   }
@@ -99,10 +107,14 @@
   cursor: pointer;
   transition: all 0.3s ease;
   text-decoration: none;
-  text-shadow: 2px 2px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000;
+  text-shadow:
+    2px 2px 0 #000,
+    -2px -2px 0 #000,
+    2px -2px 0 #000,
+    -2px 2px 0 #000;
   line-height: 1.2;
   white-space: nowrap;
-  
+
   &:hover {
     transform: scale(1.25);
   }
@@ -111,7 +123,7 @@
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
-    
+
     &:hover {
       transform: translateX(-50%) scale(1.25);
     }
@@ -149,17 +161,21 @@
   transition: all 0.2s ease;
   border-radius: 16px;
   white-space: nowrap;
-  text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
+  text-shadow:
+    1px 1px 0 #000,
+    -1px -1px 0 #000,
+    1px -1px 0 #000,
+    -1px 1px 0 #000;
   pointer-events: auto;
   position: relative;
   z-index: 1004;
-  
+
   &:hover {
     background: rgba(255, 255, 255, 0.2);
     transform: scale(1.05);
     box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
   }
-  
+
   &.active {
     background: rgba(255, 255, 255, 0.3);
     box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
@@ -181,10 +197,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
+  text-shadow:
+    1px 1px 0 #000,
+    -1px -1px 0 #000,
+    1px -1px 0 #000,
+    -1px 1px 0 #000;
   padding: 0;
   margin-left: 8px;
-  
+
   &:hover {
     background: rgba(255, 255, 255, 0.2);
   }
@@ -223,7 +243,7 @@
   flex-direction: column;
   align-items: center;
   pointer-events: auto;
-  
+
   img {
     max-width: 100%;
     max-height: 80vh;
@@ -243,7 +263,7 @@
   cursor: pointer;
   padding: 5px 10px;
   font-family: 'Press Start 2P', cursive;
-  
+
   &:hover {
     color: #ff4444;
   }

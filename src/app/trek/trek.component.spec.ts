@@ -8,10 +8,9 @@ describe('TrekComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TrekComponent, FormsModule]
-    })
-    .compileComponents();
-    
+      imports: [TrekComponent, FormsModule],
+    }).compileComponents();
+
     fixture = TestBed.createComponent(TrekComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

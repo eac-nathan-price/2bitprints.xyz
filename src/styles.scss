@@ -10,16 +10,18 @@
 @include mat.app-background();
 
 // Define the theme object.
-$bitprints-xyz-theme: mat.define-theme((
-  color: (
-    theme-type: light,
-    primary: mat.$azure-palette,
-    tertiary: mat.$blue-palette,
-  ),
-  density: (
-    scale: 0,
+$bitprints-xyz-theme: mat.define-theme(
+  (
+    color: (
+      theme-type: light,
+      primary: mat.$azure-palette,
+      tertiary: mat.$blue-palette,
+    ),
+    density: (
+      scale: 0,
+    ),
   )
-));
+);
 
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
@@ -261,11 +263,18 @@ $bitprints-xyz-theme: mat.define-theme((
   font-style: normal;
 }
 
-html, body { height: 100%; }
+html,
+body {
+  height: 100%;
+}
 body {
   margin: 0;
   padding: 0;
   background-color: #1a1a1a;
   color: #ffffff;
-  font-family: 'Press Start 2P', system-ui, -apple-system, sans-serif;
+  font-family:
+    'Press Start 2P',
+    system-ui,
+    -apple-system,
+    sans-serif;
 }

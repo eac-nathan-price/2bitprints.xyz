@@ -5,10 +5,10 @@ import { TrekComponent } from './trek/trek.component';
 export const routes: Routes = [
   {
     path: '',
-    component: GalleryComponent
+    component: GalleryComponent,
   },
   {
     path: 'trek',
-    component: TrekComponent
-  }
+    component: TrekComponent,
+  },
 ];
