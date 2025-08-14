@@ -23,8 +23,8 @@ interface FontStatus {
   styleUrls: ['./trek.component.scss'],
 })
 export class TrekComponent implements OnInit {
-  userName: string = '';
-  selectedFont: string = 'Federation';
+  userName: string = 'TOS Title';
+  selectedFont: string = 'TOSTitle';
   fontStatuses: FontStatus[] = [];
 
   fonts: FontOption[] = [
@@ -137,7 +137,7 @@ export class TrekComponent implements OnInit {
   getPreviewStyle(): any {
     return {
       'font-family': `'${this.selectedFont}', monospace`,
-      'font-size': '2rem',
+      'font-size': '2.5rem',
       'font-weight': 'bold',
       color: '#FF9C00',
       'text-align': 'center',
@@ -152,30 +152,26 @@ export class TrekComponent implements OnInit {
     };
   }
 
-  private checkFontLoading() {
+  private async checkFontLoading() {
     this.fontStatuses = [];
 
+    // Wait for fonts to be ready
+    await document.fonts.ready;
+
     this.fonts.forEach(font => {
-      const testElement = document.createElement('span');
-      testElement.style.fontFamily = `'${font.name}', monospace`;
-      testElement.style.visibility = 'hidden';
-      testElement.style.position = 'absolute';
-      testElement.style.fontSize = '72px';
-      testElement.textContent = 'Test';
-
-      document.body.appendChild(testElement);
-
-      // Get the computed font family
-      const computedFont = window.getComputedStyle(testElement).fontFamily;
-      const isLoaded = computedFont.includes(font.name);
-
+      // Use the FontFace API to check if font is loaded
+      const isLoaded = document.fonts.check(`12px '${font.name}'`);
+      
       this.fontStatuses.push({
         name: font.name,
         loaded: isLoaded,
-        error: isLoaded ? undefined : `Font not loaded - using: ${computedFont}`,
+        error: isLoaded ? undefined : `Font not loaded - check console for details`,
       });
 
-      document.body.removeChild(testElement);
+      // Log font status for debugging
+      if (!isLoaded) {
+        console.warn(`Font ${font.name} not loaded properly`);
+      }
     });
   }
 
