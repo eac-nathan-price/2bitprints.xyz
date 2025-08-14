@@ -1,7 +1,7 @@
 .trek-container {
   min-height: 100vh;
   background: linear-gradient(135deg, #000033 0%, #000066 50%, #000033 100%);
-  color: #FF9C00;
+  color: #ff9c00;
   font-family: monospace;
   padding: 2rem;
 }
@@ -11,7 +11,7 @@
   margin-bottom: 3rem;
   padding: 2rem;
   background: rgba(0, 0, 51, 0.8);
-  border: 2px solid #FF9C00;
+  border: 2px solid #ff9c00;
   border-radius: 12px;
   box-shadow: 0 0 20px rgba(255, 156, 0, 0.3);
 
@@ -26,7 +26,7 @@
   p {
     font-size: 1.2rem;
     margin: 0;
-    color: #CCCCCC;
+    color: #cccccc;
     font-weight: 300;
   }
 }
@@ -38,7 +38,7 @@
 
 .input-section {
   background: rgba(0, 0, 51, 0.8);
-  border: 2px solid #FF9C00;
+  border: 2px solid #ff9c00;
   border-radius: 12px;
   padding: 2rem;
   margin-bottom: 2rem;
@@ -58,7 +58,7 @@
   font-size: 1.1rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
-  color: #FF9C00;
+  color: #ff9c00;
   text-transform: uppercase;
   letter-spacing: 1px;
 }
@@ -68,16 +68,16 @@
   width: 100%;
   padding: 1rem;
   background: #000033;
-  border: 2px solid #FF9C00;
+  border: 2px solid #ff9c00;
   border-radius: 8px;
-  color: #FF9C00;
+  color: #ff9c00;
   font-family: monospace;
   font-size: 1rem;
   transition: all 0.3s ease;
 
   &:focus {
     outline: none;
-    border-color: #FFCC00;
+    border-color: #ffcc00;
     box-shadow: 0 0 15px rgba(255, 204, 0, 0.5);
     background: #000044;
   }
@@ -93,13 +93,13 @@
 
   option {
     background: #000033;
-    color: #FF9C00;
+    color: #ff9c00;
     padding: 0.5rem;
   }
 
   optgroup {
     background: #000044;
-    color: #FFCC00;
+    color: #ffcc00;
     font-weight: bold;
     padding: 0.5rem;
   }
@@ -107,7 +107,7 @@
 
 .preview-section {
   background: rgba(0, 0, 51, 0.8);
-  border: 2px solid #FF9C00;
+  border: 2px solid #ff9c00;
   border-radius: 12px;
   padding: 2rem;
   margin-bottom: 2rem;
@@ -118,7 +118,7 @@
   font-size: 1.5rem;
   font-weight: 600;
   margin: 0 0 1rem 0;
-  color: #FF9C00;
+  color: #ff9c00;
   text-transform: uppercase;
   letter-spacing: 1px;
   text-align: center;
@@ -126,7 +126,7 @@
 
 .preview-box {
   background: #000033;
-  border: 2px solid #FF9C00;
+  border: 2px solid #ff9c00;
   border-radius: 8px;
   min-height: 120px;
   display: flex;
@@ -137,7 +137,7 @@
   position: relative;
 
   &:hover {
-    border-color: #FFCC00;
+    border-color: #ffcc00;
     box-shadow: inset 0 0 20px rgba(255, 204, 0, 0.2);
   }
 
@@ -158,7 +158,7 @@
 
 .info-section {
   background: rgba(0, 0, 51, 0.8);
-  border: 2px solid #FF9C00;
+  border: 2px solid #ff9c00;
   border-radius: 12px;
   padding: 2rem;
   box-shadow: 0 0 20px rgba(255, 156, 0, 0.2);
@@ -166,7 +166,7 @@
   p {
     margin: 0 0 1rem 0;
     line-height: 1.6;
-    color: #CCCCCC;
+    color: #cccccc;
     font-size: 1rem;
     text-align: justify;
 
@@ -185,11 +185,11 @@
     margin-bottom: 0.5rem;
     padding: 0.5rem;
     background: rgba(0, 0, 51, 0.5);
-    border-left: 3px solid #FF9C00;
+    border-left: 3px solid #ff9c00;
     border-radius: 4px;
 
     strong {
-      color: #FF9C00;
+      color: #ff9c00;
       margin-right: 0.5rem;
     }
   }
@@ -199,7 +199,7 @@
   display: block;
   margin-top: 0.5rem;
   font-size: 0.8rem;
-  color: #CCCCCC;
+  color: #cccccc;
   font-family: monospace;
 }
 
@@ -214,12 +214,12 @@
 
   .font-status {
     margin-bottom: 0.5rem;
-    
+
     &.loaded {
       color: #00ff00;
       border-color: #00ff00;
     }
-    
+
     &.failed {
       color: #ff0000;
       border-color: #ff0000;
@@ -239,11 +239,11 @@
   margin-top: 1.5rem;
   padding: 1rem;
   background: rgba(255, 156, 0, 0.1);
-  border: 1px solid #FF9C00;
+  border: 1px solid #ff9c00;
   border-radius: 8px;
 
   h4 {
-    color: #FF9C00;
+    color: #ff9c00;
     margin: 0 0 0.5rem 0;
     font-size: 1rem;
   }
@@ -254,12 +254,12 @@
 
     li {
       margin-bottom: 0.3rem;
-      color: #CCCCCC;
+      color: #cccccc;
       font-size: 0.9rem;
       line-height: 1.4;
 
       strong {
-        color: #FF9C00;
+        color: #ff9c00;
       }
     }
   }
@@ -302,7 +302,8 @@
 
 // Animation for LCARS elements
 @keyframes lcarsGlow {
-  0%, 100% {
+  0%,
+  100% {
     box-shadow: 0 0 20px rgba(255, 156, 0, 0.2);
   }
   50% {
@@ -320,7 +321,7 @@
 // Hover effects
 .lcars-input:hover,
 .lcars-select:hover {
-  border-color: #FFCC00;
+  border-color: #ffcc00;
   background: #000044;
 }
 
