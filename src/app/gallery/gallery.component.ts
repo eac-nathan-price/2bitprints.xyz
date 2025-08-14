@@ -5,13 +5,14 @@ import * as CANNON from 'cannon-es';
 import { GalleryService, PrintImage } from './gallery.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-gallery',
   templateUrl: './gallery.component.html',
   styleUrls: ['./gallery.component.scss'],
   standalone: true,
-  imports: [CommonModule, FormsModule]
+  imports: [CommonModule, FormsModule, RouterModule]
 })
 export class GalleryComponent implements OnInit, OnDestroy {
   private scene!: THREE.Scene;
