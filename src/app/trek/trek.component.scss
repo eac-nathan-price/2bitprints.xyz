@@ -403,32 +403,26 @@
   background: #000033;
   border: 2px solid #FF9C00;
   border-radius: 8px;
-  min-height: 120px;
+  min-height: 200px;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.3s ease;
   box-shadow: inset 0 0 20px rgba(255, 156, 0, 0.1);
   position: relative;
+  padding: 1rem;
   
   &:hover {
     border-color: #FFCC00;
     box-shadow: inset 0 0 20px rgba(255, 204, 0, 0.2);
   }
-  
-  // Font loading indicator
-  &::after {
-    content: attr(data-font-name);
-    position: absolute;
-    top: 0.5rem;
-    right: 0.5rem;
-    font-size: 0.7rem;
-    color: #666;
-    font-family: monospace;
-    background: rgba(0, 0, 0, 0.7);
-    padding: 0.2rem 0.4rem;
-    border-radius: 3px;
-  }
+}
+
+.preview-canvas {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+  background: #000033;
 }
 
 .font-debug {
