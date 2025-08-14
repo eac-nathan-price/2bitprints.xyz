@@ -8,24 +8,19 @@
     <div class="input-section">
       <div class="input-group">
         <label for="userName" class="lcars-label">Enter Your Name:</label>
-        <input 
-          type="text" 
-          id="userName" 
-          name="userName" 
-          [(ngModel)]="userName" 
+        <input
+          type="text"
+          id="userName"
+          name="userName"
+          [(ngModel)]="userName"
           class="lcars-input"
           placeholder="Type your name here..."
-        >
+        />
       </div>
 
       <div class="input-group">
         <label for="fontSelect" class="lcars-label">Select Font:</label>
-        <select 
-          id="fontSelect" 
-          name="fontSelect" 
-          [(ngModel)]="selectedFont" 
-          class="lcars-select"
-        >
+        <select id="fontSelect" name="fontSelect" [(ngModel)]="selectedFont" class="lcars-select">
           <optgroup *ngFor="let group of groupedFonts" [label]="group.category">
             <option *ngFor="let font of group.fonts" [value]="font.value">
               {{ font.displayName }}
@@ -40,14 +35,19 @@
       <div class="preview-box" [ngStyle]="getPreviewStyle()">
         <span *ngIf="userName; else placeholderText">{{ userName }}</span>
         <ng-template #placeholderText>
-          <span style="color: #666; font-style: italic;">Your name will appear here</span>
+          <span style="color: #666; font-style: italic">Your name will appear here</span>
         </ng-template>
       </div>
     </div>
 
     <div class="info-section">
       <h3 class="lcars-subtitle">About LCARS:</h3>
-      <p>LCARS (Library Computer Access/Retrieval System) is the computer system interface used throughout Starfleet in the 24th century. This interface recreates the distinctive orange and blue color scheme and typography used in Star Trek: The Next Generation and subsequent series.</p>
+      <p>
+        LCARS (Library Computer Access/Retrieval System) is the computer system interface used
+        throughout Starfleet in the 24th century. This interface recreates the distinctive orange
+        and blue color scheme and typography used in Star Trek: The Next Generation and subsequent
+        series.
+      </p>
       <p><strong>Font Categories:</strong></p>
       <ul class="font-categories">
         <li><strong>Federation:</strong> Official Starfleet and Federation fonts</li>
