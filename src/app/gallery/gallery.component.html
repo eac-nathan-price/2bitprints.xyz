@@ -7,14 +7,23 @@
     <div class="tag-controls">
       <div class="title-row">
         <h1 class="retro-title" [style.color]="titleColor" (click)="respawnCubes($event)">2BitPrints</h1>
-        <a 
-          class="contact-text" 
-          [style.color]="titleColor"
-          href="mailto:2bitprints@gmail.com?subject=Request for 3d print quote&body=Details:%0AMaterial:%0AColors:%0AZip Code:%0A"
-          target="_blank"
-          (click)="$event.stopPropagation()">
-          [contact]
-        </a>
+        <div class="nav-links">
+          <a 
+            class="nav-link" 
+            [style.color]="titleColor"
+            routerLink="/trek"
+            title="LCARS Name Renderer">
+            [trek]
+          </a>
+          <a 
+            class="contact-text" 
+            [style.color]="titleColor"
+            href="mailto:2bitprints@gmail.com?subject=Request for 3d print quote&body=Details:%0AMaterial:%0AColors:%0AZip Code:%0A"
+            target="_blank"
+            (click)="$event.stopPropagation()">
+            [contact]
+          </a>
+        </div>
       </div>
       <div class="tag-list">
         <button 
