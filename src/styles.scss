@@ -36,6 +36,231 @@ $bitprints-xyz-theme: mat.define-theme((
 // @include mat.color-variants-backwards-compatibility($bitprints-xyz-theme);
 /* You can add global styles to this file, and also import other style files */
 
+// Star Trek Fonts
+@font-face {
+  font-family: 'Montalban';
+  src: url('/fonts/Montalban.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'FinalOld';
+  src: url('/fonts/FINALOLD.TTF') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Fabrini';
+  src: url('/fonts/Fabrini.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Jefferies';
+  src: url('/fonts/Jefferies.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Trill';
+  src: url('/fonts/Trill.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Dominion';
+  src: url('/fonts/Dominion.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Vulcan';
+  src: url('/fonts/Vulcan.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'TrekTNGMonitors';
+  src: url('/fonts/Trek_TNG_Monitors.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Ferengi';
+  src: url('/fonts/Ferengi.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Cardassian';
+  src: url('/fonts/Cardassian.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Bajoran';
+  src: url('/fonts/Bajoran.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Trekbats';
+  src: url('/fonts/Trekbats.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'DS9Credits';
+  src: url('/fonts/DS9_Credits.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'FederationWide';
+  src: url('/fonts/Federation_Wide.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'DS9Title';
+  src: url('/fonts/DS9_Title.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Federation';
+  src: url('/fonts/Federation.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Romulan';
+  src: url('/fonts/Romulan.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Starfleet2';
+  src: url('/fonts/Starfleet_2.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Klingon';
+  src: url('/fonts/Klingon.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'TrekMovie2';
+  src: url('/fonts/Trek_Movie_2.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'TNGTitle';
+  src: url('/fonts/TNG_Title.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'TOSTitle';
+  src: url('/fonts/TOS_Title.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Tholian';
+  src: url('/fonts/Tholian.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Starfleet1';
+  src: url('/fonts/Starfleet_1.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'TrekMovie1';
+  src: url('/fonts/Trek_Movie_1.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'FinalFrontier';
+  src: url('/fonts/Final_Frontier.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'TNGCredits';
+  src: url('/fonts/TNG_Credits.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'ContextUltraCondensedBold';
+  src: url('/fonts/Context_Ultra_Condensed_Bold.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'ContextUltraCondensed';
+  src: url('/fonts/Context_Ultra_Condensed.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Beijing';
+  src: url('/fonts/Beijing.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'NovaLightUltra';
+  src: url('/fonts/Nova_Light_Ultra.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'NovaLightUltraThin';
+  src: url('/fonts/Nova_Light_Ultra_Thin.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 html, body { height: 100%; }
 body {
   margin: 0;
