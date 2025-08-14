@@ -26,9 +26,11 @@
           [(ngModel)]="selectedFont" 
           class="lcars-select"
         >
-          <option *ngFor="let font of fonts" [value]="font.value">
-            {{ font.displayName }}
-          </option>
+          <optgroup *ngFor="let group of groupedFonts" [label]="group.category">
+            <option *ngFor="let font of group.fonts" [value]="font.value">
+              {{ font.displayName }}
+            </option>
+          </optgroup>
         </select>
       </div>
     </div>
@@ -46,6 +48,17 @@
     <div class="info-section">
       <h3 class="lcars-subtitle">About LCARS:</h3>
       <p>LCARS (Library Computer Access/Retrieval System) is the computer system interface used throughout Starfleet in the 24th century. This interface recreates the distinctive orange and blue color scheme and typography used in Star Trek: The Next Generation and subsequent series.</p>
+      <p><strong>Font Categories:</strong></p>
+      <ul class="font-categories">
+        <li><strong>Federation:</strong> Official Starfleet and Federation fonts</li>
+        <li><strong>TNG:</strong> The Next Generation series fonts</li>
+        <li><strong>DS9:</strong> Deep Space Nine series fonts</li>
+        <li><strong>TOS:</strong> The Original Series fonts</li>
+        <li><strong>Movies:</strong> Star Trek movie fonts</li>
+        <li><strong>Alien Races:</strong> Fonts representing different species</li>
+        <li><strong>Technical:</strong> Engineering and technical display fonts</li>
+        <li><strong>Additional:</strong> Other Star Trek themed fonts</li>
+      </ul>
     </div>
   </div>
 </div>
