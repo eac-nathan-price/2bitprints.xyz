@@ -266,6 +266,7 @@
           id="userName"
           name="userName"
           [(ngModel)]="userName"
+          (ngModelChange)="onTextChange()"
           class="lcars-input"
           placeholder="Type your name here..."
         />
@@ -273,7 +274,7 @@
 
       <div class="input-group">
         <label for="fontSelect" class="lcars-label">SELECT FONT:</label>
-        <select id="fontSelect" name="fontSelect" [(ngModel)]="selectedFont" class="lcars-select">
+        <select id="fontSelect" name="fontSelect" [(ngModel)]="selectedFont" (ngModelChange)="onFontChange()" class="lcars-select">
           <optgroup *ngFor="let group of groupedFonts" [label]="group.category">
             <option *ngFor="let font of group.fonts" [value]="font.value">
               {{ font.displayName }}
@@ -290,11 +291,8 @@
 
     <div class="preview-section">
       <div class="section-title">PREVIEW OUTPUT</div>
-      <div class="preview-box" [ngStyle]="getPreviewStyle()" [attr.data-font-name]="selectedFont">
-        <span *ngIf="userName; else placeholderText">{{ userName }}</span>
-        <ng-template #placeholderText>
-          <span style="color: #666; font-style: italic">Your name will appear here</span>
-        </ng-template>
+      <div class="preview-box">
+        <canvas #previewCanvas class="preview-canvas"></canvas>
       </div>
       
       <!-- Manual Font Test Button -->

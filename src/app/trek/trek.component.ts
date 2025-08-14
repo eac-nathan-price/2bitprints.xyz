@@ -1,18 +1,21 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import * as opentype from 'opentype.js';
 
 interface FontOption {
   name: string;
   value: string;
   displayName: string;
   category: string;
+  filePath: string;
 }
 
 interface FontStatus {
   name: string;
   loaded: boolean;
   error?: string;
+  font?: opentype.Font;
 }
 
 @Component({
@@ -22,98 +25,115 @@ interface FontStatus {
   templateUrl: './trek.component.html',
   styleUrls: ['./trek.component.scss'],
 })
-export class TrekComponent implements OnInit {
+export class TrekComponent implements OnInit, AfterViewInit {
+  @ViewChild('previewCanvas', { static: false }) previewCanvas!: ElementRef<HTMLCanvasElement>;
+  
   userName: string = 'TOS Title';
   selectedFont: string = 'TOSTitle';
   fontStatuses: FontStatus[] = [];
+  loadedFonts: Map<string, opentype.Font> = new Map();
 
   fonts: FontOption[] = [
     // Federation & Starfleet Fonts
-    { name: 'Federation', value: 'Federation', displayName: 'Federation', category: 'Federation' },
+    { name: 'Federation', value: 'Federation', displayName: 'Federation', category: 'Federation', filePath: '/fonts/Federation.ttf' },
     {
       name: 'FederationWide',
       value: 'FederationWide',
       displayName: 'Federation Wide',
       category: 'Federation',
+      filePath: '/fonts/Federation_Wide.ttf'
     },
-    { name: 'Starfleet1', value: 'Starfleet1', displayName: 'Starfleet 1', category: 'Federation' },
-    { name: 'Starfleet2', value: 'Starfleet2', displayName: 'Starfleet 2', category: 'Federation' },
+    { name: 'Starfleet1', value: 'Starfleet1', displayName: 'Starfleet 1', category: 'Federation', filePath: '/fonts/Starfleet_1.ttf' },
+    { name: 'Starfleet2', value: 'Starfleet2', displayName: 'Starfleet 2', category: 'Federation', filePath: '/fonts/Starfleet_2.ttf' },
 
     // TNG Series Fonts
-    { name: 'TNGTitle', value: 'TNGTitle', displayName: 'TNG Title', category: 'TNG' },
-    { name: 'TNGCredits', value: 'TNGCredits', displayName: 'TNG Credits', category: 'TNG' },
+    { name: 'TNGTitle', value: 'TNGTitle', displayName: 'TNG Title', category: 'TNG', filePath: '/fonts/TNG_Title.ttf' },
+    { name: 'TNGCredits', value: 'TNGCredits', displayName: 'TNG Credits', category: 'TNG', filePath: '/fonts/TNG_Credits.ttf' },
     {
       name: 'TrekTNGMonitors',
       value: 'TrekTNGMonitors',
       displayName: 'TNG Monitors',
       category: 'TNG',
+      filePath: '/fonts/Trek_TNG_Monitors.ttf'
     },
 
     // DS9 Series Fonts
-    { name: 'DS9Title', value: 'DS9Title', displayName: 'DS9 Title', category: 'DS9' },
-    { name: 'DS9Credits', value: 'DS9Credits', displayName: 'DS9 Credits', category: 'DS9' },
+    { name: 'DS9Title', value: 'DS9Title', displayName: 'DS9 Title', category: 'DS9', filePath: '/fonts/DS9_Title.ttf' },
+    { name: 'DS9Credits', value: 'DS9Credits', displayName: 'DS9 Credits', category: 'DS9', filePath: '/fonts/DS9_Credits.ttf' },
 
     // TOS (Original Series) Fonts
-    { name: 'TOSTitle', value: 'TOSTitle', displayName: 'TOS Title', category: 'TOS' },
+    { name: 'TOSTitle', value: 'TOSTitle', displayName: 'TOS Title', category: 'TOS', filePath: '/fonts/TOS_Title.ttf' },
 
     // Movie Fonts
-    { name: 'TrekMovie1', value: 'TrekMovie1', displayName: 'Trek Movie 1', category: 'Movies' },
-    { name: 'TrekMovie2', value: 'TrekMovie2', displayName: 'Trek Movie 2', category: 'Movies' },
+    { name: 'TrekMovie1', value: 'TrekMovie1', displayName: 'Trek Movie 1', category: 'Movies', filePath: '/fonts/Trek_Movie_1.ttf' },
+    { name: 'TrekMovie2', value: 'TrekMovie2', displayName: 'Trek Movie 2', category: 'Movies', filePath: '/fonts/Trek_Movie_2.ttf' },
     {
       name: 'FinalFrontier',
       value: 'FinalFrontier',
       displayName: 'Final Frontier',
       category: 'Movies',
+      filePath: '/fonts/Final_Frontier.ttf'
     },
 
     // Alien Race Fonts
-    { name: 'Klingon', value: 'Klingon', displayName: 'Klingon', category: 'Alien Races' },
-    { name: 'Vulcan', value: 'Vulcan', displayName: 'Vulcan', category: 'Alien Races' },
-    { name: 'Romulan', value: 'Romulan', displayName: 'Romulan', category: 'Alien Races' },
-    { name: 'Cardassian', value: 'Cardassian', displayName: 'Cardassian', category: 'Alien Races' },
-    { name: 'Bajoran', value: 'Bajoran', displayName: 'Bajoran', category: 'Alien Races' },
-    { name: 'Ferengi', value: 'Ferengi', displayName: 'Ferengi', category: 'Alien Races' },
-    { name: 'Dominion', value: 'Dominion', displayName: 'Dominion', category: 'Alien Races' },
-    { name: 'Tholian', value: 'Tholian', displayName: 'Tholian', category: 'Alien Races' },
-    { name: 'Trill', value: 'Trill', displayName: 'Trill', category: 'Alien Races' },
+    { name: 'Klingon', value: 'Klingon', displayName: 'Klingon', category: 'Alien Races', filePath: '/fonts/Klingon.ttf' },
+    { name: 'Vulcan', value: 'Vulcan', displayName: 'Vulcan', category: 'Alien Races', filePath: '/fonts/Vulcan.ttf' },
+    { name: 'Romulan', value: 'Romulan', displayName: 'Romulan', category: 'Alien Races', filePath: '/fonts/Romulan.ttf' },
+    { name: 'Cardassian', value: 'Cardassian', displayName: 'Cardassian', category: 'Alien Races', filePath: '/fonts/Cardassian.ttf' },
+    { name: 'Bajoran', value: 'Bajoran', displayName: 'Bajoran', category: 'Alien Races', filePath: '/fonts/Bajoran.ttf' },
+    { name: 'Ferengi', value: 'Ferengi', displayName: 'Ferengi', category: 'Alien Races', filePath: '/fonts/Ferengi.ttf' },
+    { name: 'Dominion', value: 'Dominion', displayName: 'Dominion', category: 'Alien Races', filePath: '/fonts/Dominion.ttf' },
+    { name: 'Tholian', value: 'Tholian', displayName: 'Tholian', category: 'Alien Races', filePath: '/fonts/Tholian.ttf' },
+    { name: 'Trill', value: 'Trill', displayName: 'Trill', category: 'Alien Races', filePath: '/fonts/Trill.ttf' },
 
     // Special & Technical Fonts
-    { name: 'Jefferies', value: 'Jefferies', displayName: 'Jefferies', category: 'Technical' },
-    { name: 'Trekbats', value: 'Trekbats', displayName: 'Trekbats', category: 'Technical' },
+    { name: 'Jefferies', value: 'Jefferies', displayName: 'Jefferies', category: 'Technical', filePath: '/fonts/Jefferies.ttf' },
+    { name: 'Trekbats', value: 'Trekbats', displayName: 'Trekbats', category: 'Technical', filePath: '/fonts/Trekbats.ttf' },
     {
       name: 'ContextUltraCondensed',
       value: 'ContextUltraCondensed',
       displayName: 'Context Ultra Condensed',
       category: 'Technical',
+      filePath: '/fonts/Context_Ultra_Condensed.ttf'
     },
     {
       name: 'ContextUltraCondensedBold',
       value: 'ContextUltraCondensedBold',
       displayName: 'Context Ultra Condensed Bold',
       category: 'Technical',
+      filePath: '/fonts/Context_Ultra_Condensed_Bold.ttf'
     },
 
     // Additional Fonts
-    { name: 'Montalban', value: 'Montalban', displayName: 'Montalban', category: 'Additional' },
-    { name: 'Fabrini', value: 'Fabrini', displayName: 'Fabrini', category: 'Additional' },
-    { name: 'Beijing', value: 'Beijing', displayName: 'Beijing', category: 'Additional' },
+    { name: 'Montalban', value: 'Montalban', displayName: 'Montalban', category: 'Additional', filePath: '/fonts/Montalban.ttf' },
+    { name: 'Fabrini', value: 'Fabrini', displayName: 'Fabrini', category: 'Additional', filePath: '/fonts/Fabrini.ttf' },
+    { name: 'Beijing', value: 'Beijing', displayName: 'Beijing', category: 'Additional', filePath: '/fonts/Beijing.ttf' },
     {
       name: 'NovaLightUltra',
       value: 'NovaLightUltra',
       displayName: 'Nova Light Ultra',
       category: 'Additional',
+      filePath: '/fonts/Nova_Light_Ultra.ttf'
     },
     {
       name: 'NovaLightUltraThin',
       value: 'NovaLightUltraThin',
       displayName: 'Nova Light Ultra Thin',
       category: 'Additional',
+      filePath: '/fonts/Nova_Light_Ultra_Thin.ttf'
     },
-    { name: 'FinalOld', value: 'FinalOld', displayName: 'Final Old', category: 'Additional' },
+    { name: 'FinalOld', value: 'FinalOld', displayName: 'Final Old', category: 'Additional', filePath: '/fonts/FINALOLD.TTF' },
   ];
 
   ngOnInit() {
-    this.checkFontLoading();
+    this.loadAllFonts();
+  }
+
+  ngAfterViewInit() {
+    // Initial render after view is initialized
+    setTimeout(() => {
+      this.renderText();
+    }, 100);
   }
 
   get groupedFonts() {
@@ -134,101 +154,141 @@ export class TrekComponent implements OnInit {
     }));
   }
 
-  getPreviewStyle(): any {
-    return {
-      'font-family': `'${this.selectedFont}', monospace`,
-      'font-size': '2.5rem',
-      'font-weight': 'bold',
-      color: '#FF9C00',
-      'text-align': 'center',
-      padding: '2rem',
-      'background-color': '#000033',
-      border: '2px solid #FF9C00',
-      'border-radius': '8px',
-      'min-height': '120px',
-      display: 'flex',
-      'align-items': 'center',
-      'justify-content': 'center',
-    };
-  }
-
-  private checkFontLoading() {
+  private async loadAllFonts() {
     this.fontStatuses = [];
-
-    // Wait a bit for fonts to load, then check them
-    setTimeout(() => {
-      this.fonts.forEach(font => {
-        const isLoaded = this.testFontLoading(font.name);
+    
+    for (const font of this.fonts) {
+      try {
+        console.log(`Loading font: ${font.name} from ${font.filePath}`);
+        
+        // Load the font using opentype.js
+        const fontData = await opentype.load(font.filePath);
+        
+        // Store the loaded font
+        this.loadedFonts.set(font.name, fontData);
         
         this.fontStatuses.push({
           name: font.name,
-          loaded: isLoaded,
-          error: isLoaded ? undefined : `Font not loaded - check console for details`,
+          loaded: true,
+          font: fontData
         });
-
-        // Log font status for debugging
-        if (!isLoaded) {
-          console.warn(`Font ${font.name} not loaded properly`);
-        } else {
-          console.log(`Font ${font.name} loaded successfully`);
+        
+        console.log(`✓ Font ${font.name} loaded successfully`);
+        
+        // Render text if this is the selected font
+        if (font.name === this.selectedFont) {
+          this.renderText();
         }
-      });
-    }, 1000); // Wait 1 second for fonts to load
+        
+      } catch (error) {
+        console.error(`✗ Failed to load font ${font.name}:`, error);
+        
+        this.fontStatuses.push({
+          name: font.name,
+          loaded: false,
+          error: `Failed to load: ${error}`
+        });
+      }
+    }
+    
+    console.log(`Font loading complete. ${this.getLoadedFontsCount()} of ${this.getTotalFontsCount()} fonts loaded.`);
   }
 
-  private testFontLoading(fontName: string): boolean {
-    try {
-      // Method 1: Test if font name appears in computed style
-      const testElement = document.createElement('span');
-      testElement.style.fontFamily = `'${fontName}', monospace`;
-      testElement.style.visibility = 'hidden';
-      testElement.style.position = 'absolute';
-      testElement.style.fontSize = '72px';
-      testElement.textContent = 'Test';
-      
-      document.body.appendChild(testElement);
-      
-      const computedFont = window.getComputedStyle(testElement).fontFamily;
-      const isNameIncluded = computedFont.includes(fontName);
-      
-      // Method 2: Compare text width with fallback font
-      const fallbackElement = document.createElement('span');
-      fallbackElement.style.fontFamily = 'monospace';
-      fallbackElement.style.visibility = 'hidden';
-      fallbackElement.style.position = 'absolute';
-      fallbackElement.style.fontSize = '72px';
-      fallbackElement.textContent = 'Test';
-      
-      document.body.appendChild(fallbackElement);
-      
-      const fallbackFont = window.getComputedStyle(fallbackElement).fontFamily;
-      const fallbackWidth = fallbackElement.offsetWidth;
-      
-      // Clean up fallback element
-      document.body.removeChild(fallbackElement);
-      
-      // Get width of test element
-      const testWidth = testElement.offsetWidth;
-      
-      // Clean up test element
-      document.body.removeChild(testElement);
-      
-      // Check if widths are different (indicating different fonts)
-      const isWidthDifferent = Math.abs(testWidth - fallbackWidth) > 1;
-      
-      // Method 3: Check if computed font is different from fallback
-      const isFontDifferent = computedFont !== fallbackFont;
-      
-      console.log(`Font ${fontName}: computed="${computedFont}", fallback="${fallbackFont}", width=${testWidth}, fallbackWidth=${fallbackWidth}, nameIncluded=${isNameIncluded}, widthDifferent=${isWidthDifferent}, fontDifferent=${isFontDifferent}`);
-      
-      // Consider it loaded if any of these conditions are met
-      const isLoaded = isNameIncluded || isWidthDifferent || isFontDifferent;
-      
-      return isLoaded;
-    } catch (error) {
-      console.error(`Error testing font ${fontName}:`, error);
-      return false;
+  renderText() {
+    if (!this.previewCanvas || !this.userName) {
+      return;
     }
+
+    const canvas = this.previewCanvas.nativeElement;
+    const ctx = canvas.getContext('2d');
+    
+    if (!ctx) {
+      console.error('Could not get canvas context');
+      return;
+    }
+
+    // Set canvas size
+    canvas.width = 600;
+    canvas.height = 200;
+
+    // Clear canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Get the selected font
+    const selectedFontData = this.loadedFonts.get(this.selectedFont);
+    
+    if (!selectedFontData) {
+      // Fallback to default font
+      ctx.font = '48px monospace';
+      ctx.fillStyle = '#FF9C00';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(this.userName, canvas.width / 2, canvas.height / 2);
+      ctx.fillText(`Font ${this.selectedFont} not loaded`, canvas.width / 2, canvas.height / 2 + 60);
+      return;
+    }
+
+    try {
+      // Render text using opentype.js
+      const fontSize = 48;
+      const text = this.userName;
+      
+      // Get the path for the text
+      const path = selectedFontData.getPath(text, 0, 0, fontSize);
+      
+      // Calculate text bounds
+      const bbox = path.getBoundingBox();
+      const textWidth = bbox.x2 - bbox.x1;
+      const textHeight = bbox.y2 - bbox.y1;
+      
+      // Center the text
+      const x = (canvas.width - textWidth) / 2;
+      const y = (canvas.height + textHeight) / 2;
+      
+      // Clear and set background
+      ctx.fillStyle = '#000033';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      // Draw border
+      ctx.strokeStyle = '#FF9C00';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(1, 1, canvas.width - 2, canvas.height - 2);
+      
+      // Render the text path
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.fillStyle = '#FF9C00';
+      path.draw(ctx);
+      ctx.restore();
+      
+      // Add font name indicator
+      ctx.font = '12px monospace';
+      ctx.fillStyle = '#666';
+      ctx.textAlign = 'right';
+      ctx.textBaseline = 'top';
+      ctx.fillText(this.selectedFont, canvas.width - 10, 10);
+      
+      console.log(`Text rendered successfully with font ${this.selectedFont}`);
+      
+    } catch (error) {
+      console.error(`Error rendering text with font ${this.selectedFont}:`, error);
+      
+      // Fallback rendering
+      ctx.font = '48px monospace';
+      ctx.fillStyle = '#FF9C00';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(this.userName, canvas.width / 2, canvas.height / 2);
+      ctx.fillText(`Rendering error`, canvas.width / 2, canvas.height / 2 + 60);
+    }
+  }
+
+  onFontChange() {
+    this.renderText();
+  }
+
+  onTextChange() {
+    this.renderText();
   }
 
   getFontStatus(fontName: string): FontStatus | undefined {
@@ -244,21 +304,23 @@ export class TrekComponent implements OnInit {
   }
 
   retestFonts() {
-    console.log('Retesting all fonts...');
-    this.checkFontLoading();
+    console.log('Reloading all fonts...');
+    this.loadedFonts.clear();
+    this.loadAllFonts();
   }
 
   testSpecificFont(fontName: string) {
     console.log(`Testing specific font: ${fontName}`);
-    const isLoaded = this.testFontLoading(fontName);
+    const fontData = this.loadedFonts.get(fontName);
     
-    // Update the status for this font
-    const existingStatus = this.fontStatuses.find(s => s.name === fontName);
-    if (existingStatus) {
-      existingStatus.loaded = isLoaded;
-      existingStatus.error = isLoaded ? undefined : 'Font not loaded - check console for details';
+    if (fontData) {
+      console.log(`✓ Font ${fontName} is loaded and ready`);
+      // Update the preview if this is the selected font
+      if (fontName === this.selectedFont) {
+        this.renderText();
+      }
+    } else {
+      console.log(`✗ Font ${fontName} is not loaded`);
     }
-    
-    console.log(`Font ${fontName} test result: ${isLoaded ? 'LOADED' : 'FAILED'}`);
   }
 }
