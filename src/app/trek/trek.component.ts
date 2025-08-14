@@ -152,27 +152,83 @@ export class TrekComponent implements OnInit {
     };
   }
 
-  private async checkFontLoading() {
+  private checkFontLoading() {
     this.fontStatuses = [];
 
-    // Wait for fonts to be ready
-    await document.fonts.ready;
+    // Wait a bit for fonts to load, then check them
+    setTimeout(() => {
+      this.fonts.forEach(font => {
+        const isLoaded = this.testFontLoading(font.name);
+        
+        this.fontStatuses.push({
+          name: font.name,
+          loaded: isLoaded,
+          error: isLoaded ? undefined : `Font not loaded - check console for details`,
+        });
 
-    this.fonts.forEach(font => {
-      // Use the FontFace API to check if font is loaded
-      const isLoaded = document.fonts.check(`12px '${font.name}'`);
-      
-      this.fontStatuses.push({
-        name: font.name,
-        loaded: isLoaded,
-        error: isLoaded ? undefined : `Font not loaded - check console for details`,
+        // Log font status for debugging
+        if (!isLoaded) {
+          console.warn(`Font ${font.name} not loaded properly`);
+        } else {
+          console.log(`Font ${font.name} loaded successfully`);
+        }
       });
+    }, 1000); // Wait 1 second for fonts to load
+  }
 
-      // Log font status for debugging
-      if (!isLoaded) {
-        console.warn(`Font ${font.name} not loaded properly`);
-      }
-    });
+  private testFontLoading(fontName: string): boolean {
+    try {
+      // Method 1: Test if font name appears in computed style
+      const testElement = document.createElement('span');
+      testElement.style.fontFamily = `'${fontName}', monospace`;
+      testElement.style.visibility = 'hidden';
+      testElement.style.position = 'absolute';
+      testElement.style.fontSize = '72px';
+      testElement.textContent = 'Test';
+      
+      document.body.appendChild(testElement);
+      
+      const computedFont = window.getComputedStyle(testElement).fontFamily;
+      const isNameIncluded = computedFont.includes(fontName);
+      
+      // Method 2: Compare text width with fallback font
+      const fallbackElement = document.createElement('span');
+      fallbackElement.style.fontFamily = 'monospace';
+      fallbackElement.style.visibility = 'hidden';
+      fallbackElement.style.position = 'absolute';
+      fallbackElement.style.fontSize = '72px';
+      fallbackElement.textContent = 'Test';
+      
+      document.body.appendChild(fallbackElement);
+      
+      const fallbackFont = window.getComputedStyle(fallbackElement).fontFamily;
+      const fallbackWidth = fallbackElement.offsetWidth;
+      
+      // Clean up fallback element
+      document.body.removeChild(fallbackElement);
+      
+      // Get width of test element
+      const testWidth = testElement.offsetWidth;
+      
+      // Clean up test element
+      document.body.removeChild(testElement);
+      
+      // Check if widths are different (indicating different fonts)
+      const isWidthDifferent = Math.abs(testWidth - fallbackWidth) > 1;
+      
+      // Method 3: Check if computed font is different from fallback
+      const isFontDifferent = computedFont !== fallbackFont;
+      
+      console.log(`Font ${fontName}: computed="${computedFont}", fallback="${fallbackFont}", width=${testWidth}, fallbackWidth=${fallbackWidth}, nameIncluded=${isNameIncluded}, widthDifferent=${isWidthDifferent}, fontDifferent=${isFontDifferent}`);
+      
+      // Consider it loaded if any of these conditions are met
+      const isLoaded = isNameIncluded || isWidthDifferent || isFontDifferent;
+      
+      return isLoaded;
+    } catch (error) {
+      console.error(`Error testing font ${fontName}:`, error);
+      return false;
+    }
   }
 
   getFontStatus(fontName: string): FontStatus | undefined {
@@ -185,5 +241,24 @@ export class TrekComponent implements OnInit {
 
   getTotalFontsCount(): number {
     return this.fontStatuses.length;
+  }
+
+  retestFonts() {
+    console.log('Retesting all fonts...');
+    this.checkFontLoading();
+  }
+
+  testSpecificFont(fontName: string) {
+    console.log(`Testing specific font: ${fontName}`);
+    const isLoaded = this.testFontLoading(fontName);
+    
+    // Update the status for this font
+    const existingStatus = this.fontStatuses.find(s => s.name === fontName);
+    if (existingStatus) {
+      existingStatus.loaded = isLoaded;
+      existingStatus.error = isLoaded ? undefined : 'Font not loaded - check console for details';
+    }
+    
+    console.log(`Font ${fontName} test result: ${isLoaded ? 'LOADED' : 'FAILED'}`);
   }
 }

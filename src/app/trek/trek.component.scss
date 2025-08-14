@@ -463,6 +463,88 @@
   }
 }
 
+.font-test-controls {
+  margin-top: 1rem;
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  
+  .lcars-btn {
+    background: #000033;
+    border: 2px solid #FF9C00;
+    border-radius: 8px;
+    padding: 0.8rem 1.5rem;
+    color: #FF9C00;
+    font-family: monospace;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      background: #FF9C00;
+      color: #000033;
+      box-shadow: 0 0 15px rgba(255, 156, 0, 0.5);
+    }
+    
+    &:active {
+      transform: scale(0.95);
+    }
+  }
+}
+
+.font-summary {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: rgba(0, 0, 51, 0.5);
+  border: 1px solid #FF9C00;
+  border-radius: 8px;
+  
+  h4 {
+    color: #FF9C00;
+    margin: 0 0 1rem 0;
+    text-align: center;
+    font-size: 1rem;
+  }
+  
+  .font-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0.5rem;
+    max-height: 200px;
+    overflow-y: auto;
+    
+    .font-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      
+      &.loaded {
+        background: rgba(0, 255, 0, 0.1);
+        border: 1px solid #00FF00;
+        color: #00FF00;
+      }
+      
+      &.failed {
+        background: rgba(255, 0, 0, 0.1);
+        border: 1px solid #FF0000;
+        color: #FF0000;
+      }
+      
+      .font-name {
+        font-weight: bold;
+      }
+      
+      .font-status-indicator {
+        font-size: 1.2rem;
+        font-weight: bold;
+      }
+    }
+  }
+}
+
 .font-categories {
   list-style: none;
   padding: 0;
