@@ -1,0 +1,127 @@
+.home-container {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background: #1a1a1a;
+}
+
+.controls-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 20px;
+  z-index: 1000;
+  transform-style: preserve-3d;
+  pointer-events: auto;
+}
+
+.content-controls {
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+  pointer-events: auto;
+  z-index: 1001;
+}
+
+.title-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 20px;
+  position: relative;
+  gap: 64px;
+  min-height: 40px;
+  pointer-events: auto;
+  z-index: 1002;
+
+  @media (max-width: 768px) {
+    gap: 16px;
+  }
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-left: auto;
+
+  @media (max-width: 768px) {
+    margin-left: 0;
+    gap: 12px;
+  }
+}
+
+.nav-link {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  text-shadow:
+    2px 2px 0 #000,
+    -2px -2px 0 #000,
+    2px -2px 0 #000,
+    -2px 2px 0 #000;
+  line-height: 1.2;
+  white-space: nowrap;
+
+  &:hover {
+    transform: scale(1.25);
+  }
+
+  @media (max-width: 480px) {
+    font-size: 12px;
+  }
+}
+
+.retro-title {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 24px;
+  margin: 0;
+  cursor: pointer;
+  display: inline-block;
+  transition: all 0.3s ease;
+  transform-origin: left center;
+  text-shadow:
+    2px 2px 0 #000,
+    -2px -2px 0 #000,
+    2px -2px 0 #000,
+    -2px 2px 0 #000;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+}
+
+.contact-text {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  text-shadow:
+    2px 2px 0 #000,
+    -2px -2px 0 #000,
+    2px -2px 0 #000,
+    -2px 2px 0 #000;
+  line-height: 1.2;
+  white-space: nowrap;
+
+  &:hover {
+    transform: scale(1.25);
+  }
+
+  @media (max-width: 767px) {
+    margin-left: auto;
+  }
+
+  @media (max-width: 480px) {
+    margin-left: 0;
+    width: 100%;
+    text-align: left;
+  }
+}
