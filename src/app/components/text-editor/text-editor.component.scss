@@ -10,13 +10,17 @@
 }
 
 .controls-header {
-  padding: 200px 24px 20px 24px;
+  padding: 120px 24px 20px 24px;
   background: transparent;
   display: flex;
   gap: 20px;
   align-items: center;
   flex-wrap: wrap;
   justify-content: center;
+
+  @media (max-width: 768px) {
+    padding: 160px 24px 20px 24px;
+  }
 }
 
 .control-group {
