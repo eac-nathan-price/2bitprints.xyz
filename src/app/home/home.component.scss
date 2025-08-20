@@ -17,6 +17,9 @@
   z-index: 1000;
   transform-style: preserve-3d;
   pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .content-controls {
@@ -25,18 +28,23 @@
   position: relative;
   pointer-events: auto;
   z-index: 1001;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  flex: auto;
 }
 
 .title-row {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: center;
+  justify-content: space-around;
   position: relative;
   gap: 32px;
   min-height: 40px;
   pointer-events: auto;
   z-index: 1002;
+  width: 100%;
 
   @media (max-width: 768px) {
     gap: 16px;
@@ -45,17 +53,31 @@
   }
 }
 
+.title-content {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  flex: auto;
+
+  @media (max-width: 768px) {
+    justify-content: flex-start;
+    gap: 16px;
+  }
+}
+
 .nav-links {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 60px;
   margin-left: auto;
   margin-right: 60px;
 
   @media (max-width: 768px) {
     margin-left: auto;
-    margin-right: 10px;
-    gap: 12px;
+    margin-right: 64px;
+    gap: 40px;
     width: auto;
     flex-wrap: wrap;
     justify-content: flex-end;
