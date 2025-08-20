@@ -14,29 +14,47 @@ import { CommonModule } from '@angular/common';
   `,
   styles: `
 @keyframes red-loop {
-  0%, 100% {
+  0% {
     transform: rotateZ(90deg) translateX(-4px) translateY(4px);
   }
-  50% {
-    transform: rotateZ(90deg) translateX(-4px) translateY(4px) translateZ(64px);
+  20% {
+    transform: rotateZ(90deg) translateX(-4px) translateY(4px);
+  }
+  80% {
+    transform: rotateZ(90deg) translateX(-4px) translateY(4px) translateZ(66px);
+  }
+  100% {
+    transform: rotateZ(90deg) translateX(-4px) translateY(4px) translateZ(66px);
   }
 }
 
 @keyframes green-loop {
-  0%, 100% {
+  0%{
     transform: rotateX(90deg) translateZ(-62px) translateX(-62px);
   }
-  50% {
-    transform: rotateX(90deg) translateZ(-62px) translateX(-62px) translateZ(64px);
+  20% {
+    transform: rotateX(90deg) translateZ(-62px) translateX(-62px);
+  }
+  80% {
+    transform: rotateX(90deg) translateZ(-62px) translateX(-62px) translateZ(66px);
+  }
+  100% {
+    transform: rotateX(90deg) translateZ(-62px) translateX(-62px) translateZ(66px);
   }
 }
 
 @keyframes blue-loop {
-  0%, 100% {
+  0% {
     transform: rotateY(-90deg) translateY(-4px) translateX(2px);
   }
-  50% {
-    transform: rotateY(-90deg) translateY(-4px) translateX(2px) translateZ(64px);
+  20% {
+    transform: rotateY(-90deg) translateY(-4px) translateX(2px);
+  }
+  80% {
+    transform: rotateY(-90deg) translateY(-4px) translateX(2px) translateZ(66px);
+  }
+  100% {
+    transform: rotateY(-90deg) translateY(-4px) translateX(2px) translateZ(66px);
   }
 }
 
@@ -70,15 +88,15 @@ import { CommonModule } from '@angular/common';
 
   &:not(:hover) {
     .red {
-      animation: red-loop 6s ease-in-out infinite;
+      animation: red-loop 3s ease-in-out infinite alternate;
     }
 
     .green {
-      animation: green-loop 6s ease-in-out infinite 1s;
+      animation: green-loop 3s ease-in-out infinite 0.5s alternate;
     }
 
     .blue {
-      animation: blue-loop 6s ease-in-out infinite 2s;
+      animation: blue-loop 3s ease-in-out infinite 1s alternate;
     }
   }
 }
