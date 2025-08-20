@@ -8,9 +8,12 @@
     <div class="content-controls">
       <div class="title-row">
         <app-logo></app-logo>
-        <h1 class="retro-title" [style.color]="titleColor">
-          2BitPrints
-        </h1>
+        <a class="retro-title" [style.color]="titleColor" target="_blank" (click)="$event.stopPropagation()"
+          href="mailto:2bitprints@gmail.com?subject=Request for 3d print quote&body=Details:%0AMaterial:%0AColors:%0AZip Code:%0A"
+        >
+          <div>2BitPrints</div>
+          <div style="font-size: 16px;">&lt;contact&gt;</div>
+        </a>
         <div class="nav-links">
           <a
             class="nav-link"
@@ -20,15 +23,15 @@
           >
             [gallery]
           </a>
-          <a
+          <!-- <a
             class="nav-link"
             [style.color]="titleColor"
             routerLink="/trek"
             title="LCARS Name Renderer"
           >
             [trek]
-          </a>
-          <a
+          </a> -->
+          <!-- <a
             class="contact-text"
             [style.color]="titleColor"
             href="mailto:2bitprints@gmail.com?subject=Request for 3d print quote&body=Details:%0AMaterial:%0AColors:%0AZip Code:%0A"
@@ -36,7 +39,7 @@
             (click)="$event.stopPropagation()"
           >
             [contact]
-          </a>
+          </a> -->
         </div>
       </div>
     </div>
