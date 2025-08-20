@@ -62,11 +62,11 @@ import { CommonModule } from '@angular/common';
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-right: 16px;
+  margin-right: 0;
   cursor: pointer;
   transition: transform 0.5s ease;
-  width: 120px;
-  height: 120px;
+  width: 100px;
+  height: 100px;
   perspective: 1000px;
 
   &:hover {

@@ -64,7 +64,7 @@ export class ThemesService {
       name: "Adventure Time Title",
       font: "AdventureTimeLogo.json",
       color: 0xff0000,
-      background: 0x6cbfff,
+      background: 0x00b5e2,
       text: "ADVENTURE TIME",
       tags: ["Misc"],
       caps: false

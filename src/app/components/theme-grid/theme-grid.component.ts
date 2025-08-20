@@ -130,7 +130,7 @@ export class ThemeGridComponent implements OnInit, OnDestroy, OnChanges {
     canvas.style.width = '200px';
     canvas.style.height = '150px';
     canvas.style.borderRadius = '8px';
-    canvas.style.border = '2px solid #1a252f';
+    canvas.style.border = '2px solid #333333';
 
     // Append the canvas to the container
     canvasContainer.appendChild(canvas);
