@@ -1,0 +1,67 @@
+<div class="text-editor-container">
+  <div class="controls-header">
+    <div class="control-group">
+      <label>Product:</label>
+      <select
+        [value]="selectedProduct?.name || ''"
+        (change)="onProductChange($event)"
+      >
+        <option value="">Select Product</option>
+        <option *ngFor="let product of products" [value]="product.name">
+          {{ product.name }}
+        </option>
+      </select>
+    </div>
+    
+    <div class="control-group">
+      <label>Text:</label>
+      <input
+        type="text"
+        [value]="text"
+        (input)="text = $any($event.target).value"
+        placeholder="Enter your text"
+      />
+    </div>
+    
+    <!-- Download button - only show in debug mode -->
+    <button 
+      *ngIf="isDebugMode()"
+      (click)="export3MF()"
+      class="export-button"
+    >
+      💾 Download 3MF
+    </button>
+    
+    <!-- Additional scaling checkbox - only show in debug mode -->
+    <div *ngIf="isDebugMode()" class="control-group checkbox-group">
+      <label>
+        <input
+          type="checkbox"
+          [checked]="scaleText"
+          (change)="scaleText = $any($event.target).checked"
+        />
+        Enable Additional Scaling
+      </label>
+    </div>
+  </div>
+  
+  <!-- Theme Grid -->
+  <app-theme-grid
+    [selectedTheme]="selectedTheme"
+    [selectedProduct]="selectedProduct"
+    [userText]="text"
+    (themeSelect)="applyTheme($event)"
+  ></app-theme-grid>
+  
+  <!-- 3D Scene -->
+  <div class="scene-container">
+    <app-three-scene
+      [text]="text"
+      [selectedTheme]="selectedTheme"
+      [selectedProduct]="selectedProduct"
+      [textColor]="textColor"
+      [backgroundColor]="backgroundColor"
+      [scaleText]="scaleText"
+    ></app-three-scene>
+  </div>
+</div>

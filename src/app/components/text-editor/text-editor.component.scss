@@ -1,0 +1,101 @@
+.text-editor-container {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #222222;
+  font-family: "Press Start 2P", system-ui;
+}
+
+.controls-header {
+  padding: 40px 24px 20px 24px;
+  background: transparent;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.control-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  label {
+    color: #ffffff;
+    font-size: 12px;
+    font-family: "Press Start 2P", system-ui;
+    min-width: 60px;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+  }
+
+  select, input {
+    min-width: 150px;
+    padding: 8px 12px;
+    border-radius: 4px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    background: rgba(0, 0, 0, 0.3);
+    color: #ffffff;
+    font-size: 12px;
+    font-family: "Press Start 2P", system-ui;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+
+    &:focus {
+      border-color: rgba(255, 255, 255, 0.6);
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+      background: rgba(0, 0, 0, 0.5);
+    }
+
+    &:hover {
+      border-color: rgba(255, 255, 255, 0.4);
+      background: rgba(0, 0, 0, 0.4);
+    }
+  }
+
+  &.checkbox-group {
+    label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      min-width: auto;
+
+      input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        accent-color: rgba(255, 255, 255, 0.8);
+        cursor: pointer;
+        min-width: auto;
+      }
+    }
+  }
+}
+
+.export-button {
+  padding: 10px 20px;
+  background: rgba(0, 0, 0, 0.3);
+  color: #ffffff;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  font-size: 12px;
+  font-family: "Press Start 2P", system-ui;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  min-width: 140px;
+
+  &:hover {
+    border-color: rgba(255, 255, 255, 0.4);
+    background: rgba(0, 0, 0, 0.4);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+  }
+}
+
+.scene-container {
+  flex: 1;
+  position: relative;
+}
