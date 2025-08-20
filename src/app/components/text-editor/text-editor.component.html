@@ -3,10 +3,9 @@
     <div class="control-group">
       <label>Product:</label>
       <select
-        [value]="selectedProduct?.name || ''"
+        [value]="selectedProduct?.name"
         (change)="onProductChange($event)"
       >
-        <option value="">Select Product</option>
         <option *ngFor="let product of products" [value]="product.name">
           {{ product.name }}
         </option>

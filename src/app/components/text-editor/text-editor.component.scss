@@ -5,10 +5,12 @@
   flex-direction: column;
   background-color: #222222;
   font-family: "Press Start 2P", system-ui;
+  position: relative;
+  z-index: 100;
 }
 
 .controls-header {
-  padding: 40px 24px 20px 24px;
+  padding: 200px 24px 20px 24px;
   background: transparent;
   display: flex;
   gap: 20px;
