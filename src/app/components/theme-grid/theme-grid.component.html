@@ -1,0 +1,32 @@
+<div class="theme-grid-container">
+  <h2 class="theme-grid-title">
+    Choose Your Theme
+  </h2>
+  
+  <div class="theme-grid">
+    <div
+      *ngFor="let preview of previews; let i = index"
+      class="theme-item"
+      [class.selected]="selectedTheme?.name === preview.theme.name"
+      [class.hovered]="hoveredTheme === preview.theme.name"
+      (click)="onThemeSelect(preview.theme)"
+      (mouseenter)="onThemeHover(preview.theme.name)"
+      (mouseleave)="onThemeHover(null)"
+    >
+      <div class="theme-content">
+        <div class="canvas-container" [attr.data-theme-index]="i">
+          <!-- Canvas will be dynamically inserted here -->
+        </div>
+        
+        <div class="theme-info">
+          <h3 class="theme-name">
+            {{ preview.theme.name }}
+          </h3>
+          <p class="theme-tags">
+            {{ preview.theme.tags.join(', ') }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
