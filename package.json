@@ -9,7 +9,8 @@
     "test": "ng test",
     "serve:ssr:2bitprints.xyz": "node dist/2bitprints.xyz/server/server.mjs",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "optimize-media": "node scripts/optimize-media.js"
   },
   "private": true,
   "dependencies": {
@@ -30,6 +31,7 @@
     "express": "^4.18.2",
     "opentype.js": "^1.3.4",
     "rxjs": "~7.8.0",
+    "sharp": "^0.33.2",
     "three": "^0.176.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"
