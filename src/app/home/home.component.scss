@@ -1,10 +1,11 @@
 .home-container {
-  position: fixed;
+  position: relative; // Changed from fixed to relative to enable scrolling
   width: 100vw;
-  height: 100vh;
+  min-height: 100vh; // Changed from height to min-height
   margin: 0;
   padding: 0;
-  overflow: hidden;
+  overflow-y: auto; // Enable vertical scrolling
+  overflow-x: hidden; // Prevent horizontal scrolling
   background: #1a1a1a;
 }
 
@@ -169,6 +170,27 @@
   margin-right: auto;
 }
 
+.custom-text-section {
+  margin-top: 40px; // Reduced margin for better spacing
+  
+  // Limit the height of the text editor component
+  app-text-editor {
+    display: block;
+    max-height: 600px; // Set maximum height
+    overflow: hidden; // Hide overflow
+  }
+}
+
+.custom-image-section {
+  margin-top: 40px;
+  margin-bottom: 60px; // Add bottom margin for proper page ending
+  text-align: center;
+  padding: 20px;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .section-title {
   font-family: 'Press Start 2P', monospace;
   font-size: 28px;
@@ -227,22 +249,29 @@
   display: flex;
   transition: transform 0.5s ease-in-out;
   width: fit-content;
+  
+  &.jumping {
+    transition: none; // Disable transition when jumping between ends
+  }
 }
 
 .carousel-item {
   flex-shrink: 0;
-  width: 300px;
-  height: 200px;
+  width: auto; // Allow width to adjust based on aspect ratio
+  height: 300px; // Increased from 200px to 300px (50% larger)
   margin: 0 10px;
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .carousel-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  height: 100%; // Fixed height
+  width: auto; // Width adjusts to maintain aspect ratio
+  object-fit: contain; // Changed from cover to contain to prevent cropping
   transition: transform 0.3s ease;
   
   &:hover {
@@ -315,6 +344,14 @@
     padding: 15px;
   }
   
+  .custom-text-section {
+    margin-top: 30px;
+    
+    app-text-editor {
+      max-height: 500px; // Smaller max height on mobile
+    }
+  }
+  
   .section-title {
     font-size: 24px;
     margin-bottom: 15px;
@@ -325,8 +362,8 @@
   }
   
   .carousel-item {
-    width: 250px;
-    height: 167px;
+    width: auto; // Allow width to adjust based on aspect ratio
+    height: 250px; // Increased from 167px to 250px (50% larger)
   }
   
   .carousel-nav {

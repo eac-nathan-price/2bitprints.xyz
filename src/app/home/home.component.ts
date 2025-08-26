@@ -30,7 +30,10 @@ export class HomeComponent implements OnInit, OnDestroy {
   public carouselImages: CarouselImage[] = [];
   public currentSlide: number = 0;
   public carouselOffset: number = 0;
+  public isJumping: boolean = false; // Track when jumping between ends
   private readonly slideWidth: number = 300; // Width of each carousel item
+  public originalImages: CarouselImage[] = []; // Store original images for infinite loop
+  public readonly loopOffset: number = 5; // Number of duplicate images to add for seamless looping
 
   constructor(@Inject(PLATFORM_ID) platformId: Object) {
     this.isBrowser = isPlatformBrowser(platformId);
@@ -57,8 +60,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   private initCarousel(): void {
-    // Initialize carousel with optimized images
-    this.carouselImages = [
+    // Initialize original images
+    this.originalImages = [
       { src: '/media/optimized/PXL_20250428_221122962.MP.webp', alt: '3D Print Sample 1' },
       { src: '/media/optimized/PXL_20250529_063442357.webp', alt: '3D Print Sample 2' },
       { src: '/media/optimized/PXL_20250601_181746146.webp', alt: '3D Print Sample 3' },
@@ -76,6 +79,16 @@ export class HomeComponent implements OnInit, OnDestroy {
       { src: '/media/optimized/PXL_20250825_082740395.webp', alt: '3D Print Sample 15' }
     ];
     
+    // Create infinite loop by duplicating images at the beginning and end
+    this.carouselImages = [
+      ...this.originalImages.slice(-this.loopOffset), // Add last 5 images at the beginning
+      ...this.originalImages, // Add all original images
+      ...this.originalImages.slice(0, this.loopOffset) // Add first 5 images at the end
+    ];
+    
+    // Start at the first original image (after the duplicated ones at the beginning)
+    this.currentSlide = this.loopOffset;
+    
     // Start auto-rotation
     this.startCarouselAutoRotation();
   }
@@ -87,23 +100,53 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   public nextSlide(): void {
-    this.currentSlide = (this.currentSlide + 1) % this.carouselImages.length;
+    this.currentSlide++;
+    
+    // If we've reached the end of the duplicated images, jump to the beginning
+    if (this.currentSlide >= this.carouselImages.length - this.loopOffset) {
+      // Wait for transition to complete, then jump to the beginning
+      setTimeout(() => {
+        this.isJumping = true;
+        this.currentSlide = this.loopOffset;
+        this.updateCarouselOffset();
+        // Re-enable transitions after a brief moment
+        setTimeout(() => {
+          this.isJumping = false;
+        }, 50);
+      }, 500);
+    }
+    
     this.updateCarouselOffset();
   }
 
   public previousSlide(): void {
-    this.currentSlide = this.currentSlide === 0 
-      ? this.carouselImages.length - 1 
-      : this.currentSlide - 1;
+    this.currentSlide--;
+    
+    // If we've reached the beginning of the duplicated images, jump to the end
+    if (this.currentSlide < this.loopOffset) {
+      // Wait for transition to complete, then jump to the end
+      setTimeout(() => {
+        this.isJumping = true;
+        this.currentSlide = this.carouselImages.length - this.loopOffset - 1;
+        this.updateCarouselOffset();
+        // Re-enable transitions after a brief moment
+        setTimeout(() => {
+          this.isJumping = false;
+        }, 50);
+      }, 500);
+    }
+    
     this.updateCarouselOffset();
   }
 
   public goToSlide(index: number): void {
-    this.currentSlide = index;
+    // Adjust index to account for the duplicated images at the beginning
+    this.currentSlide = index + this.loopOffset;
     this.updateCarouselOffset();
   }
 
   private updateCarouselOffset(): void {
+    // Calculate offset based on current slide position
     this.carouselOffset = -this.currentSlide * this.slideWidth;
   }
 

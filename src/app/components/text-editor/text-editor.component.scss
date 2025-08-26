@@ -1,16 +1,18 @@
 .text-editor-container {
   width: 100%;
-  min-height: 100vh;
+  min-height: auto; // Changed from 100vh to auto
+  max-height: 600px; // Added max-height constraint
   display: flex;
   flex-direction: column;
   background-color: #222222;
   font-family: "Press Start 2P", system-ui;
   position: relative;
   z-index: 100;
+  overflow: hidden; // Hide overflow content
 }
 
 .controls-header {
-  padding: 120px 24px 20px 24px;
+  padding: 60px 24px 20px 24px; // Reduced top padding from 120px to 60px
   background: transparent;
   display: flex;
   gap: 20px;
@@ -19,7 +21,7 @@
   justify-content: center;
 
   @media (max-width: 768px) {
-    padding: 160px 24px 20px 24px;
+    padding: 80px 24px 20px 24px; // Reduced from 160px to 80px
   }
 }
 
@@ -104,4 +106,7 @@
 .scene-container {
   flex: 1;
   position: relative;
+  max-height: 400px; // Limit the height of the 3D scene
+  min-height: 300px; // Ensure minimum height for usability
+  overflow: hidden; // Hide overflow content
 }
