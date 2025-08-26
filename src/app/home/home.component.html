@@ -16,14 +16,19 @@
           <div style="font-size: 16px;">&lt;contact&gt;</div>
         </a>
         <div class="nav-links">
-          <a
+          <a [style.color]="titleColor" style="text-decoration: none;" target="_blank" (click)="$event.stopPropagation()"
+          href="mailto:2bitprints@gmail.com?subject=Request for 3d print quote&body=Details:%0AMaterial:%0AColors:%0AZip Code:%0A"
+          >
+            <div>Custom 3D Prints and Design</div>
+          </a>
+          <!-- <a
             class="nav-link"
             [style.color]="titleColor"
             routerLink="/gallery"
             title="Gallery"
           >
             [gallery]
-          </a>
+          </a> -->
           <!-- <a
             class="nav-link"
             [style.color]="titleColor"
@@ -47,6 +52,52 @@
     </div>
   </div>
   
-  <!-- 3D Text Editor -->
-  <app-text-editor></app-text-editor>
+  <!-- Custom Prints Carousel Section -->
+  <div class="custom-prints-section">
+    <h2 class="section-title">Custom Prints</h2>
+    <p class="section-subtitle">
+      <a href="mailto:2bitprints@gmail.com?subject=Request for 3d print quote&body=Details:%0AMaterial:%0AColors:%0AZip Code:%0A" 
+         class="contact-link" 
+         target="_blank">
+        &lt;contact&gt;
+      </a> for details
+    </p>
+    
+    <div class="carousel-container">
+      <div class="carousel-track" [style.transform]="'translateX(' + carouselOffset + 'px)'">
+        <div class="carousel-item" *ngFor="let image of carouselImages; let i = index">
+          <img [src]="image.src" [alt]="image.alt" class="carousel-image">
+        </div>
+      </div>
+      
+      <button class="carousel-nav prev" (click)="previousSlide()" aria-label="Previous image">
+        ‹
+      </button>
+      <button class="carousel-nav next" (click)="nextSlide()" aria-label="Next image">
+        ›
+      </button>
+      
+      <div class="carousel-indicators">
+        <button 
+          *ngFor="let image of carouselImages; let i = index" 
+          class="indicator" 
+          [class.active]="currentSlide === i"
+          (click)="goToSlide(i)"
+          [attr.aria-label]="'Go to slide ' + (i + 1)">
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Custom Text Section -->
+  <div class="custom-text-section">
+    <h2 class="section-title">Custom Text</h2>
+    <app-text-editor></app-text-editor>
+  </div>
+  
+  <!-- Custom Image Generator Section -->
+  <div class="custom-image-section">
+    <h2 class="section-title">Custom Image Generator</h2>
+    <p class="coming-soon">Coming Soon</p>
+  </div>
 </div>
