@@ -30,10 +30,9 @@ export class HomeComponent implements OnInit, OnDestroy {
   public carouselImages: CarouselImage[] = [];
   public currentSlide: number = 0;
   public carouselOffset: number = 0;
-  public isJumping: boolean = false; // Track when jumping between ends
   private readonly slideWidth: number = 300; // Width of each carousel item
   public originalImages: CarouselImage[] = []; // Store original images for infinite loop
-  public readonly loopOffset: number = 5; // Number of duplicate images to add for seamless looping
+  public isPaused: boolean = false; // Track if carousel is paused
 
   constructor(@Inject(PLATFORM_ID) platformId: Object) {
     this.isBrowser = isPlatformBrowser(platformId);
@@ -60,34 +59,33 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   private initCarousel(): void {
-    // Initialize original images
+    // Initialize images in the specified order
     this.originalImages = [
-      { src: '/media/optimized/PXL_20250428_221122962.MP.webp', alt: '3D Print Sample 1' },
-      { src: '/media/optimized/PXL_20250529_063442357.webp', alt: '3D Print Sample 2' },
-      { src: '/media/optimized/PXL_20250601_181746146.webp', alt: '3D Print Sample 3' },
-      { src: '/media/optimized/PXL_20250609_143907443.webp', alt: '3D Print Sample 4' },
-      { src: '/media/optimized/PXL_20250611_063603131.webp', alt: '3D Print Sample 5' },
-      { src: '/media/optimized/PXL_20250616_142127703.webp', alt: '3D Print Sample 6' },
-      { src: '/media/optimized/PXL_20250621_162801843~2.webp', alt: '3D Print Sample 7' },
-      { src: '/media/optimized/PXL_20250630_233919983.webp', alt: '3D Print Sample 8' },
-      { src: '/media/optimized/PXL_20250708_203727235.MP.webp', alt: '3D Print Sample 9' },
-      { src: '/media/optimized/PXL_20250719_055833751.webp', alt: '3D Print Sample 10' },
-      { src: '/media/optimized/PXL_20250725_051054564.webp', alt: '3D Print Sample 11' },
-      { src: '/media/optimized/PXL_20250730_155518346.webp', alt: '3D Print Sample 12' },
-      { src: '/media/optimized/PXL_20250801_155518412.webp', alt: '3D Print Sample 13' },
-      { src: '/media/optimized/PXL_20250813_224411311.MP.webp', alt: '3D Print Sample 14' },
-      { src: '/media/optimized/PXL_20250825_082740395.webp', alt: '3D Print Sample 15' }
+      { src: '/media/optimized/PXL_20250616_142127703.webp', alt: '3D Print Sample 1' },
+      { src: '/media/optimized/PXL_20250719_055833751.webp', alt: '3D Print Sample 2' },
+      { src: '/media/optimized/PXL_20250630_233919983.webp', alt: '3D Print Sample 3' },
+      { src: '/media/optimized/PXL_20250825_082740395.webp', alt: '3D Print Sample 4' },
+      { src: '/media/optimized/PXL_20250708_203727235.MP.webp', alt: '3D Print Sample 5' },
+      { src: '/media/optimized/PXL_20250708_222213802.webp', alt: '3D Print Sample 6' },
+      { src: '/media/optimized/PXL_20250813_224411311.MP.webp', alt: '3D Print Sample 7' },
+      { src: '/media/optimized/PXL_20250801_155518412.webp', alt: '3D Print Sample 8' },
+      { src: '/media/optimized/PXL_20250730_155518346.webp', alt: '3D Print Sample 9' },
+      { src: '/media/optimized/PXL_20250725_051054564.webp', alt: '3D Print Sample 10' },
+      { src: '/media/optimized/PXL_20250610_041201163.webp', alt: '3D Print Sample 11' },
+      { src: '/media/optimized/PXL_20250613_004404545.MP.webp', alt: '3D Print Sample 12' },
+      { src: '/media/optimized/PXL_20250621_162801843~2.webp', alt: '3D Print Sample 13' },
+      { src: '/media/optimized/PXL_20250531_003143156.webp', alt: '3D Print Sample 14' },
+      { src: '/media/optimized/PXL_20250611_063603131.webp', alt: '3D Print Sample 15' },
+      { src: '/media/optimized/PXL_20250609_143907443.webp', alt: '3D Print Sample 16' },
+      { src: '/media/optimized/PXL_20250601_225238850.MP.webp', alt: '3D Print Sample 17' },
+      { src: '/media/optimized/PXL_20250601_183942594.MP.webp', alt: '3D Print Sample 18' }
     ];
     
-    // Create infinite loop by duplicating images at the beginning and end
-    this.carouselImages = [
-      ...this.originalImages.slice(-this.loopOffset), // Add last 5 images at the beginning
-      ...this.originalImages, // Add all original images
-      ...this.originalImages.slice(0, this.loopOffset) // Add first 5 images at the end
-    ];
+    // Use the original images directly - no complex duplication
+    this.carouselImages = [...this.originalImages];
     
-    // Start at the first original image (after the duplicated ones at the beginning)
-    this.currentSlide = this.loopOffset;
+    // Start at the first image
+    this.currentSlide = 0;
     
     // Start auto-rotation
     this.startCarouselAutoRotation();
@@ -95,58 +93,38 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   private startCarouselAutoRotation(): void {
     this.carouselIntervalId = setInterval(() => {
-      this.nextSlide();
+      if (!this.isPaused) {
+        this.nextSlide();
+      }
     }, 4000); // Change slide every 4 seconds
   }
 
+  public pauseCarousel(): void {
+    this.isPaused = true;
+  }
+
+  public resumeCarousel(): void {
+    this.isPaused = false;
+  }
+
   public nextSlide(): void {
-    this.currentSlide++;
-    
-    // If we've reached the end of the duplicated images, jump to the beginning
-    if (this.currentSlide >= this.carouselImages.length - this.loopOffset) {
-      // Wait for transition to complete, then jump to the beginning
-      setTimeout(() => {
-        this.isJumping = true;
-        this.currentSlide = this.loopOffset;
-        this.updateCarouselOffset();
-        // Re-enable transitions after a brief moment
-        setTimeout(() => {
-          this.isJumping = false;
-        }, 50);
-      }, 500);
-    }
-    
+    this.currentSlide = (this.currentSlide + 1) % this.carouselImages.length;
     this.updateCarouselOffset();
   }
 
   public previousSlide(): void {
-    this.currentSlide--;
-    
-    // If we've reached the beginning of the duplicated images, jump to the end
-    if (this.currentSlide < this.loopOffset) {
-      // Wait for transition to complete, then jump to the end
-      setTimeout(() => {
-        this.isJumping = true;
-        this.currentSlide = this.carouselImages.length - this.loopOffset - 1;
-        this.updateCarouselOffset();
-        // Re-enable transitions after a brief moment
-        setTimeout(() => {
-          this.isJumping = false;
-        }, 50);
-      }, 500);
-    }
-    
+    this.currentSlide = this.currentSlide === 0 
+      ? this.carouselImages.length - 1 
+      : this.currentSlide - 1;
     this.updateCarouselOffset();
   }
 
   public goToSlide(index: number): void {
-    // Adjust index to account for the duplicated images at the beginning
-    this.currentSlide = index + this.loopOffset;
+    this.currentSlide = index;
     this.updateCarouselOffset();
   }
 
   private updateCarouselOffset(): void {
-    // Calculate offset based on current slide position
     this.carouselOffset = -this.currentSlide * this.slideWidth;
   }
 
