@@ -11,8 +11,8 @@ import { ThreeSceneComponent } from '../three-scene/three-scene.component';
   templateUrl: './text-editor.component.html',
   styleUrls: ['./text-editor.component.scss'],
   standalone: true,
-  imports: [CommonModule, ThemeGridComponent, ThreeSceneComponent],
-  providers: [ProductsService, ThemesService]
+  imports: [CommonModule, ThemeGridComponent, ThreeSceneComponent]
+  // Removed providers to prevent duplicate service instances
 })
 export class TextEditorComponent implements OnInit {
   // Text and font state

@@ -11,8 +11,8 @@ import { Product, ProductsService } from '../../services/products.service';
   selector: 'app-three-scene',
   templateUrl: './three-scene.component.html',
   styleUrls: ['./three-scene.component.scss'],
-  standalone: true,
-  providers: [ProductsService, ThemesService]
+  standalone: true
+  // Removed providers to prevent duplicate service instances
 })
 export class ThreeSceneComponent implements OnInit, OnDestroy, OnChanges {
   @ViewChild('rendererContainer', { static: true }) rendererContainer!: ElementRef;

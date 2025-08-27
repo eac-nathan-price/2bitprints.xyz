@@ -23,8 +23,7 @@ interface ThemePreview {
   templateUrl: './theme-grid.component.html',
   styleUrls: ['./theme-grid.component.scss'],
   standalone: true,
-  imports: [CommonModule],
-  providers: [ThemesService]
+  imports: [CommonModule]
 })
 export class ThemeGridComponent implements OnInit, OnDestroy, OnChanges {
   @Input() selectedTheme: Theme | null = null;
@@ -60,6 +59,7 @@ export class ThemeGridComponent implements OnInit, OnDestroy, OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     if (this.isBrowser && this.previews.length > 0 && this.selectedProduct) {
       if (changes['userText'] || changes['selectedProduct']) {
+        console.log('Updating previews due to changes:', Object.keys(changes));
         this.previews.forEach((preview) => {
           if (preview.scene && preview.theme) {
             const loader = new FontLoader();
@@ -75,6 +75,12 @@ export class ThemeGridComponent implements OnInit, OnDestroy, OnChanges {
   private initializePreviews() {
     if (!this.selectedProduct) {
       console.warn('No selected product, skipping preview initialization');
+      return;
+    }
+
+    // Prevent duplicate initialization
+    if (this.previews.length > 0) {
+      console.log('Previews already initialized, skipping duplicate initialization');
       return;
     }
 
@@ -285,11 +291,30 @@ export class ThemeGridComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   private cleanupPreviews() {
+    console.log('Cleaning up previews...');
     this.previews.forEach(preview => {
       if (preview.renderer) {
         preview.renderer.dispose();
       }
+      if (preview.scene) {
+        // Dispose of geometries and materials
+        preview.scene.traverse((object) => {
+          if (object instanceof THREE.Mesh) {
+            if (object.geometry) {
+              object.geometry.dispose();
+            }
+            if (object.material) {
+              if (Array.isArray(object.material)) {
+                object.material.forEach(material => material.dispose());
+              } else {
+                object.material.dispose();
+              }
+            }
+          }
+        });
+      }
     });
+    this.previews = []; // Clear the array
   }
 
   onThemeSelect(theme: Theme) {

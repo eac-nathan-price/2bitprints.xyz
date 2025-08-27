@@ -1,18 +1,27 @@
 .text-editor-container {
   width: 100%;
-  min-height: auto; // Changed from 100vh to auto
-  max-height: 600px; // Added max-height constraint
+  min-height: auto;
+  max-height: 600px; // Keep desktop height constraint
   display: flex;
   flex-direction: column;
   background-color: #222222;
   font-family: "Press Start 2P", system-ui;
   position: relative;
   z-index: 100;
-  overflow: hidden; // Hide overflow content
+  overflow: hidden; // Hide overflow on desktop to prevent covering other content
+
+  @media (max-width: 768px) {
+    min-height: auto; // Let content determine height
+    max-height: none; // Remove height constraint on mobile
+    overflow: visible; // Allow content to flow naturally on mobile
+    background-color: #333333; // Slightly lighter background for mobile visibility
+    border-radius: 8px; // Add rounded corners on mobile
+    margin: 10px 0; // Add some margin for mobile spacing
+  }
 }
 
 .controls-header {
-  padding: 60px 24px 20px 24px; // Reduced top padding from 120px to 60px
+  padding: 60px 24px 20px 24px;
   background: transparent;
   display: flex;
   gap: 20px;
@@ -21,7 +30,11 @@
   justify-content: center;
 
   @media (max-width: 768px) {
-    padding: 80px 24px 20px 24px; // Reduced from 160px to 80px
+    padding: 100px 16px 20px 16px; // Reduced padding, smaller margins
+    gap: 16px; // Smaller gap on mobile
+    flex-direction: column; // Stack controls vertically on mobile
+    background: rgba(0, 0, 0, 0.1); // Add subtle background on mobile
+    border-radius: 8px 8px 0 0; // Rounded top corners
   }
 }
 
@@ -30,12 +43,24 @@
   align-items: center;
   gap: 12px;
 
+  @media (max-width: 768px) {
+    flex-direction: column; // Stack label and input vertically on mobile
+    align-items: flex-start;
+    gap: 8px;
+    width: 100%; // Full width on mobile
+  }
+
   label {
     color: #ffffff;
     font-size: 12px;
     font-family: "Press Start 2P", system-ui;
     min-width: 60px;
     text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+
+    @media (max-width: 768px) {
+      min-width: auto;
+      font-size: 11px; // Slightly smaller on mobile
+    }
   }
 
   select, input {
@@ -51,6 +76,13 @@
     outline: none;
     transition: all 0.3s ease;
     backdrop-filter: blur(10px);
+
+    @media (max-width: 768px) {
+      min-width: 100%; // Full width on mobile
+      width: 100%;
+      font-size: 11px; // Slightly smaller on mobile
+      padding: 10px 12px; // Slightly larger padding for touch
+    }
 
     &:focus {
       border-color: rgba(255, 255, 255, 0.6);
@@ -71,6 +103,12 @@
       gap: 8px;
       cursor: pointer;
       min-width: auto;
+
+      @media (max-width: 768px) {
+        flex-direction: row; // Keep checkbox and label horizontal on mobile
+        width: 100%;
+        justify-content: flex-start;
+      }
 
       input[type="checkbox"] {
         width: 18px;
@@ -96,6 +134,13 @@
   backdrop-filter: blur(10px);
   min-width: 140px;
 
+  @media (max-width: 768px) {
+    width: 100%; // Full width on mobile
+    min-width: auto;
+    font-size: 11px;
+    padding: 12px 20px; // Larger padding for touch
+  }
+
   &:hover {
     border-color: rgba(255, 255, 255, 0.4);
     background: rgba(0, 0, 0, 0.4);
@@ -106,7 +151,16 @@
 .scene-container {
   flex: 1;
   position: relative;
-  max-height: 400px; // Limit the height of the 3D scene
-  min-height: 300px; // Ensure minimum height for usability
-  overflow: hidden; // Hide overflow content
+  max-height: 400px; // Keep desktop height constraint
+  min-height: 300px; // Keep desktop minimum height
+  overflow: hidden; // Hide overflow on desktop
+
+  @media (max-width: 768px) {
+    min-height: auto; // Let content determine height
+    max-height: none; // Remove height constraint on mobile
+    overflow: visible; // Allow content to flow naturally on mobile
+    background: rgba(0, 0, 0, 0.05); // Subtle background for mobile
+    border-radius: 0 0 8px 8px; // Rounded bottom corners
+    padding: 10px; // Add some padding for mobile
+  }
 }

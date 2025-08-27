@@ -168,27 +168,56 @@
   max-width: 1200px;
   margin-left: auto;
   margin-right: auto;
+
+  @media (max-width: 768px) {
+    margin-top: 120px; // Adequate spacing from title bar on mobile
+    padding: 16px;
+  }
+}
+
+.custom-prints-section {
+  @media (max-width: 768px) {
+    margin-top: 140px; // Extra spacing for the first section
+  }
 }
 
 .custom-text-section {
-  margin-top: 40px; // Reduced margin for better spacing
+  margin-top: 40px;
   
-  // Limit the height of the text editor component
+  @media (max-width: 768px) {
+    margin-top: 30px;
+  }
+  
+  // Height constraints for the text editor component
   app-text-editor {
     display: block;
-    max-height: 600px; // Set maximum height
-    overflow: hidden; // Hide overflow
+    
+    @media (min-width: 769px) {
+      max-height: 600px; // Desktop height constraint
+      overflow: hidden; // Hide overflow on desktop
+    }
+    
+    @media (max-width: 768px) {
+      max-height: none; // No height constraint on mobile
+      overflow: visible; // Allow content to flow naturally on mobile
+    }
   }
 }
 
 .custom-image-section {
   margin-top: 40px;
-  margin-bottom: 60px; // Add bottom margin for proper page ending
+  margin-bottom: 60px;
   text-align: center;
   padding: 20px;
   max-width: 1200px;
   margin-left: auto;
   margin-right: auto;
+
+  @media (max-width: 768px) {
+    margin-top: 30px;
+    margin-bottom: 40px;
+    padding: 16px;
+  }
 }
 
 .section-title {
@@ -351,23 +380,8 @@
   }
 }
 
-// Responsive adjustments
+// Responsive adjustments - clean up conflicting rules
 @media (max-width: 768px) {
-  .custom-prints-section,
-  .custom-text-section,
-  .custom-image-section {
-    margin-top: 60px;
-    padding: 15px;
-  }
-  
-  .custom-text-section {
-    margin-top: 30px;
-    
-    app-text-editor {
-      max-height: 500px; // Smaller max height on mobile
-    }
-  }
-  
   .section-title {
     font-size: 24px;
     margin-bottom: 15px;
@@ -378,8 +392,8 @@
   }
   
   .carousel-item {
-    width: auto; // Allow width to adjust based on aspect ratio
-    height: 250px; // Increased from 167px to 250px (50% larger)
+    width: auto;
+    height: 250px;
   }
   
   .carousel-nav {
